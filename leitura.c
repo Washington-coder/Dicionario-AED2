@@ -101,20 +101,42 @@ TLivro *lerLivro(FILE *fl)
     return livro;
 }
 
-char capturaStopWords(){
+// char capturaStopWords(){
+//     FILE *fl;
+//     char *livro = "stopwords_br.txt";
+//     fl = fopen(livro, "r");
+
+//     char stopwords[392][48];
+//     char palavra[48];
+//     int i = 0;
+
+//     while(fscanf(fl, "%s", palavra) == 1){
+//         strcpy(stopwords[i], palavra);
+//         printf("%s\n", stopwords[i]);
+//         i++;
+//     }
+//     return stopwords;
+// }
+
+char **carregarStopwords()
+{
     FILE *fl;
     char *livro = "stopwords_br.txt";
     fl = fopen(livro, "r");
+    int i;
 
-    char stopwords[392][48];
+    char **stopwords = malloc(392 * sizeof(char *));
+    for (i = 0; i < 392; ++i)
+        stopwords[i] = malloc(48 * sizeof(char));
+
     char palavra[48];
-    int i = 0;
+    i = 0;
 
     while(fscanf(fl, "%s", palavra) == 1){
         strcpy(stopwords[i], palavra);
-        printf("%s\n", stopwords[i]);
         i++;
     }
+
     return stopwords;
 }
 
@@ -127,8 +149,11 @@ int main()
     // TLivro* lido = lerLivro(fl);
 
     // imprime_livro(lido);
-    char** vetor = capturaStopWords();
-    printf("%s", vetor[0]);
+    // char** vetor = capturaStopWords();
+    // printf("%s", vetor[0]);
+
+    char **vetorDeStopWords = carregarStopwords();
+    printf("%s", vetorDeStopWords[1]); /* Prints the first string. */
 }
 
 // chcp 65001
