@@ -2,26 +2,30 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
-
-struct pagina{
+struct pagina
+{
     char p[1000][48];
     int num_pal;
 };
 
-typedef struct slivro{
-    TPagina* ps[1000];
+typedef struct slivro
+{
+    TPagina *ps[1000];
     int num_pag;
-}TLivro;
+} TLivro;
 
 // imprime uma página
-void imprime_pagina(TPagina* p){
-    for (int j = 0; j < p->num_pal; j++) {
+void imprime_pagina(TPagina *p)
+{
+    for (int j = 0; j < p->num_pal; j++)
+    {
         printf("%s ", p->p[j]);
     }
     printf("\n");
 }
 
-void printPag(TPagina* pagina) {
+void printPag(TPagina *pagina)
+{
     for (int j = 0; j < pagina->num_pal; j++)
     {
         printf("%s ", pagina->p[j]);
@@ -29,10 +33,12 @@ void printPag(TPagina* pagina) {
     printf("\n\n");
 }
 
-// imprime um livro inteiro, indicando as páginas 
-void imprime_livro(TLivro* l){
-    for (int i = 0; i < l->num_pag; i++){
-        printf("PÁGINA %d ###########\n", i+1);
+// imprime um livro inteiro, indicando as páginas
+void imprime_livro(TLivro *l)
+{
+    for (int i = 0; i < l->num_pag; i++)
+    {
+        printf("PÁGINA %d ###########\n", i + 1);
         printf("NÚMERO DE PALAVRAS: %d \n", l->ps[i]->num_pal);
         printPag(l->ps[i]);
         printf("\n\n");
@@ -41,7 +47,8 @@ void imprime_livro(TLivro* l){
     printf("NÚMERO DE PÁGINAS: %d\n", l->num_pag);
 }
 
-TPagina* criaPagina(){
+TPagina *criaPagina()
+{
     TPagina *pagina = malloc(sizeof(TPagina));
     pagina->num_pal = 0;
     return pagina;
@@ -50,7 +57,7 @@ TPagina* criaPagina(){
 TPagina *lerPagina(FILE *fl)
 {
     char palavra[48];
-    TPagina* pagina = criaPagina();
+    TPagina *pagina = criaPagina();
 
     short estaNaPagina = 1;
     int i = 0;
@@ -78,10 +85,9 @@ TPagina *lerPagina(FILE *fl)
     return pagina;
 }
 
-
-
-TLivro* lerLivro(FILE* fl) {
-    TLivro* livro = malloc(sizeof(TLivro));
+TLivro *lerLivro(FILE *fl)
+{
+    TLivro *livro = malloc(sizeof(TLivro));
     livro->num_pag = 0;
 
     TPagina *pagina = lerPagina(fl);
@@ -92,21 +98,37 @@ TLivro* lerLivro(FILE* fl) {
         livro->num_pag++;
         pagina = lerPagina(fl);
     }
-    
     return livro;
+}
+
+char capturaStopWords(){
+    FILE *fl;
+    char *livro = "stopwords_br.txt";
+    fl = fopen(livro, "r");
+
+    char stopwords[392][48];
+    char palavra[48];
+    int i = 0;
+
+    while(fscanf(fl, "%s", palavra) == 1){
+        strcpy(stopwords[i], palavra);
+        printf("%s\n", stopwords[i]);
+        i++;
+    }
+    return stopwords;
 }
 
 int main()
 {
-    FILE *fl;
-    char *livro = "Paralelismo.base";
-    fl = fopen(livro, "r");
+    // FILE *fl;
+    // char *livro = "Paralelismo.base";
+    // fl = fopen(livro, "r");
 
-    TLivro* lido = lerLivro(fl);
-    
-    imprime_livro(lido);
-    
-    
+    // TLivro* lido = lerLivro(fl);
+
+    // imprime_livro(lido);
+    char** vetor = capturaStopWords();
+    printf("%s", vetor[0]);
 }
 
 // chcp 65001
