@@ -54,7 +54,24 @@ TPagina *criaPagina()
     return pagina;
 }
 
-TPagina *lerPagina(FILE *fl)
+void ehStopword(char **stopwords, char * palavra){
+    // for (int i = 0; i < 392; i++) {
+    //     if(strcmp(stopwords[i], palavra) == 0) {
+    //         printf("\n\neh uma stopword");
+    //         return 1;
+    //     }else{
+    //         return 0;
+    //     }
+    // }
+
+    for (int i = 0; i < 392; i++) {
+        if(strcmp(stopwords[i], palavra) == 0) {
+            printf("\n\neh uma stopword");
+        }
+    }
+}
+
+TPagina *lerPagina(FILE *fl, char** stopwords)
 {
     char palavra[48];
     TPagina *pagina = criaPagina();
@@ -71,7 +88,15 @@ TPagina *lerPagina(FILE *fl)
             break;
         }
 
-        strcpy(pagina->p[i], palavra);
+        ehStopword(stopwords, pagina->p[i]);
+
+        // if (ehStopword(stopwords, pagina->p[i])){
+        //     strcpy(pagina->p[i], "*");
+        // }else{
+        //     strcpy(pagina->p[i], palavra);
+        // }
+
+        // strcpy(pagina->p[i], palavra);
         i++;
         pagina->num_pal++;
     }
@@ -85,38 +110,21 @@ TPagina *lerPagina(FILE *fl)
     return pagina;
 }
 
-TLivro *lerLivro(FILE *fl)
+TLivro *lerLivro(FILE *fl, char** stopwords)
 {
     TLivro *livro = malloc(sizeof(TLivro));
     livro->num_pag = 0;
 
-    TPagina *pagina = lerPagina(fl);
-    pagina = lerPagina(fl); // por melhorar k
+    TPagina *pagina = lerPagina(fl, stopwords);
+    pagina = lerPagina(fl, stopwords); // por melhorar k
     while (pagina)
     {
         livro->ps[livro->num_pag] = pagina;
         livro->num_pag++;
-        pagina = lerPagina(fl);
+        pagina = lerPagina(fl, stopwords);
     }
     return livro;
 }
-
-// char capturaStopWords(){
-//     FILE *fl;
-//     char *livro = "stopwords_br.txt";
-//     fl = fopen(livro, "r");
-
-//     char stopwords[392][48];
-//     char palavra[48];
-//     int i = 0;
-
-//     while(fscanf(fl, "%s", palavra) == 1){
-//         strcpy(stopwords[i], palavra);
-//         printf("%s\n", stopwords[i]);
-//         i++;
-//     }
-//     return stopwords;
-// }
 
 char **carregarStopwords()
 {
@@ -142,18 +150,17 @@ char **carregarStopwords()
 
 int main()
 {
-    // FILE *fl;
-    // char *livro = "Paralelismo.base";
-    // fl = fopen(livro, "r");
-
-    // TLivro* lido = lerLivro(fl);
-
-    // imprime_livro(lido);
-    // char** vetor = capturaStopWords();
-    // printf("%s", vetor[0]);
+    FILE *fl;
+    char *livro = "Paralelismo.base";
+    fl = fopen(livro, "r");
 
     char **vetorDeStopWords = carregarStopwords();
-    printf("%s", vetorDeStopWords[1]); /* Prints the first string. */
+
+    TLivro* lido = lerLivro(fl, vetorDeStopWords);
+
+    imprime_livro(lido);
+
+
 }
 
 // chcp 65001
