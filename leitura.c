@@ -164,3 +164,4 @@ int main()
 }
 
 // chcp 65001
+// teste (amanda)
