@@ -69,16 +69,16 @@ int ehStopword(char **stopwords, char *palavra)
 
 char * passarParaMinusculo(char * palavra){
 
-    char string[strlen(palavra)];
+    char * string = malloc(strlen(palavra));
 
     strcpy(string, palavra);
 
     for (int i = 0; i < strlen(string); i++)
     {
         string[i] = tolower(string[i]);
-        printf("%c\n", string[i]);
+        // printf("%c\n", string[i]);
     }
-    
+    return string;
 }
 
 TPagina *lerPagina(FILE *fl, char **stopwords)
@@ -98,11 +98,12 @@ TPagina *lerPagina(FILE *fl, char **stopwords)
             break;
         }
 
-        // strcpy(palavra, passarParaMinusculo(palavra));
+        char * string = malloc(strlen(palavra));
+        strcpy(string, passarParaMinusculo(palavra));
 
-        if (!ehStopword(stopwords, palavra))
+        if (!ehStopword(stopwords, string))
         {
-            strcpy(pagina->p[i], palavra);
+            strcpy(pagina->p[i], string);
             pagina->num_pal++;
         }
         i++;
@@ -158,18 +159,15 @@ char **carregarStopwords()
 
 int main()
 {
-    char string[3];
-    strcpy(string, passarParaMinusculo("AbC"));
-    printf("%s\n", string);
-    // FILE *fl;
-    // char *livro = "teste.base";
-    // fl = fopen(livro, "r");
+    FILE *fl;
+    char *livro = "Paralelismo.base";
+    fl = fopen(livro, "r");
 
-    // char **vetorDeStopWords = carregarStopwords();
+    char **vetorDeStopWords = carregarStopwords();
 
-    // TLivro *lido = lerLivro(fl, vetorDeStopWords);
+    TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
-    // imprime_livro(lido);
+    imprime_livro(lido);
 }
 
 // chcp 65001
