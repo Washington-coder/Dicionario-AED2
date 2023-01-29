@@ -80,16 +80,11 @@ TPagina *lerPagina(FILE *fl, char** stopwords)
             break;
         }
 
-
-
-        strcpy(pagina->p[i], palavra);
-
-        if (ehStopword(stopwords, pagina->p[i])){
-            strcpy(pagina->p[i], "*");
+        if (!ehStopword(stopwords, palavra)){
+            strcpy(pagina->p[i], palavra);
+            pagina->num_pal++;
         }
-
         i++;
-        pagina->num_pal++;
     }
 
     // condição de parada para a leitura de livros
