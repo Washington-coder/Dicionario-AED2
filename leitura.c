@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
+#include <ctype.h>
 struct pagina
 {
     char p[1000][48];
@@ -54,16 +55,33 @@ TPagina *criaPagina()
     return pagina;
 }
 
-int ehStopword(char **stopwords, char * palavra){
-    for (int i = 0; i < 392; i++) {
-        if(strcmp(stopwords[i], palavra) == 0) {
+int ehStopword(char **stopwords, char *palavra)
+{
+    for (int i = 0; i < 392; i++)
+    {
+        if (strcmp(stopwords[i], palavra) == 0)
+        {
             return 1;
         }
     }
     return 0;
 }
 
-TPagina *lerPagina(FILE *fl, char** stopwords)
+char * passarParaMinusculo(char * palavra){
+
+    char string[strlen(palavra)];
+
+    strcpy(string, palavra);
+
+    for (int i = 0; i < strlen(string); i++)
+    {
+        string[i] = tolower(string[i]);
+        printf("%c\n", string[i]);
+    }
+    
+}
+
+TPagina *lerPagina(FILE *fl, char **stopwords)
 {
     char palavra[48];
     TPagina *pagina = criaPagina();
@@ -80,7 +98,10 @@ TPagina *lerPagina(FILE *fl, char** stopwords)
             break;
         }
 
-        if (!ehStopword(stopwords, palavra)){
+        // strcpy(palavra, passarParaMinusculo(palavra));
+
+        if (!ehStopword(stopwords, palavra))
+        {
             strcpy(pagina->p[i], palavra);
             pagina->num_pal++;
         }
@@ -96,7 +117,7 @@ TPagina *lerPagina(FILE *fl, char** stopwords)
     return pagina;
 }
 
-TLivro *lerLivro(FILE *fl, char** stopwords)
+TLivro *lerLivro(FILE *fl, char **stopwords)
 {
     TLivro *livro = malloc(sizeof(TLivro));
     livro->num_pag = 0;
@@ -126,7 +147,8 @@ char **carregarStopwords()
     char palavra[48];
     i = 0;
 
-    while(fscanf(fl, "%s", palavra) == 1){
+    while (fscanf(fl, "%s", palavra) == 1)
+    {
         strcpy(stopwords[i], palavra);
         i++;
     }
@@ -136,17 +158,18 @@ char **carregarStopwords()
 
 int main()
 {
-    FILE *fl;
-    char *livro = "teste.base";
-    fl = fopen(livro, "r");
+    char string[3];
+    strcpy(string, passarParaMinusculo("AbC"));
+    printf("%s\n", string);
+    // FILE *fl;
+    // char *livro = "teste.base";
+    // fl = fopen(livro, "r");
 
-    char **vetorDeStopWords = carregarStopwords();
+    // char **vetorDeStopWords = carregarStopwords();
 
-    TLivro* lido = lerLivro(fl, vetorDeStopWords);
+    // TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
-    imprime_livro(lido);
-
-
+    // imprime_livro(lido);
 }
 
 // chcp 65001
