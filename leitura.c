@@ -54,21 +54,13 @@ TPagina *criaPagina()
     return pagina;
 }
 
-void ehStopword(char **stopwords, char * palavra){
-    // for (int i = 0; i < 392; i++) {
-    //     if(strcmp(stopwords[i], palavra) == 0) {
-    //         printf("\n\neh uma stopword");
-    //         return 1;
-    //     }else{
-    //         return 0;
-    //     }
-    // }
-
+int ehStopword(char **stopwords, char * palavra){
     for (int i = 0; i < 392; i++) {
         if(strcmp(stopwords[i], palavra) == 0) {
-            printf("\n\neh uma stopword");
+            return 1;
         }
     }
+    return 0;
 }
 
 TPagina *lerPagina(FILE *fl, char** stopwords)
@@ -88,15 +80,14 @@ TPagina *lerPagina(FILE *fl, char** stopwords)
             break;
         }
 
-        ehStopword(stopwords, pagina->p[i]);
 
-        // if (ehStopword(stopwords, pagina->p[i])){
-        //     strcpy(pagina->p[i], "*");
-        // }else{
-        //     strcpy(pagina->p[i], palavra);
-        // }
 
-        // strcpy(pagina->p[i], palavra);
+        strcpy(pagina->p[i], palavra);
+
+        if (ehStopword(stopwords, pagina->p[i])){
+            strcpy(pagina->p[i], "*");
+        }
+
         i++;
         pagina->num_pal++;
     }
@@ -151,7 +142,7 @@ char **carregarStopwords()
 int main()
 {
     FILE *fl;
-    char *livro = "Paralelismo.base";
+    char *livro = "teste.base";
     fl = fopen(livro, "r");
 
     char **vetorDeStopWords = carregarStopwords();

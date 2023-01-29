@@ -1,0 +1,100 @@
+PA UNIVERSIDADE DE SÃO PAULO
+   INSTITUTO DE FÍSICA DE SÃO CARLOS
+   PARALELISMO EM VISÃO NATURAL E
+   ARTIFICIAL
+   Odemir Martinez Bruno
+   Tese apresentada ao Instituto de Física de São
+   Carlos, da Universidade de São Paulo, para a
+   obtenção do título de Doutor em Ciências: Física
+   Aplicada (Física Computacional).
+   Orientador: Prof. Dr. Luciano da Fontoura Costa
+   DEPARTAMENTO DE FÍSICA E INFORMÁTICA
+   São Carlos
+   2000
+   Bruno, Odemir Martinez
+   Paralelismo em Visão Natural e Artificial / Odemir
+   Martinez Bruno. São Carlos, 200.
+   391 p.
+   Tese (Doutorado) - Instituto de Física de São Carlos,
+   2000.
+   Orientador: Prof. Dr. Luciano da Fontoura Costa
+   1. Visão Cibernética. 2. Computação Paralela.
+   I. Título
+   À minha esposa Adriana e aos meus
+   pais Orlando e Maria Candida.
+   AGRADECIMENTOS
+   À minha esposa Adriana e aos meus pais Orlando e Maria Candida, pelo
+   incentivo, colaboração, carinho e apoio.
+   Ao Prof. Luciano, pela orientação científica, amizade e pelas valiosas
+   oportunidades de aprendizado.
+   Aos meus amigos, colegas e colaboradores Alan Salvany Felinto e Jander
+   Moreira, pela cooperação nos trabalhos referentes ao sistema Cyvis-1 e pelo
+   auxílio na validação e testes do CVMP, além da convivência pessoal.
+   A Luís Augusto Consularo, pelo trabalho em conjunto, pelo auxílio nos
+   testes do CVMP e pela amizade.
+   A Roberto César Marcondes Junior, pelo trabalho em conjunto no projeto
+   ynergos e convivência pessoal.
+   À Cristina Algodoal Martins, pelas valiosas sugestões em botânica e pela
+   amizade.
+   Ao Prof. Hilton Thadeu Zarate do Couto da ESALQ-USP, pelas indicações e
+   informações referentes aos herbários.
+   À Estação Ecológica de Moji-Guaçu do Instituto Florestal do Estado de S.
+   Paulo, pelo fornecimento de amostras de plantas arbóreas utilizadas neste
+   trabalho. Em especial a Eduardo Amaral Batista, pesquisador chefe da unidade e
+   José Carlos de Lima, auxiliar de apoio à pesquisa.
+   À Wladerez A. G. Caiado, por sua competência e constante bom humor,
+   nos auxiliando ao longo desses anos nas questões burocráticas.
+   Ao pessoal da biblioteca do Instituto de Física de São Carlos, pela
+   competência e presteza.
+   A todos os colegas do Grupo de Pesquisa em Visão Cibernética pela
+   amizade, fraternidade, cooperação e pelas produtivas discussões.
+PA Aos técnicos do Grupo, Marcos Roberto Gonçalves e Alexandre Rodrigues
+   da Silva, pelo auxílio e suporte.
+   A todos os professores e pesquisadores com quem pude aprender e
+   debater nesses anos.
+   A todos que, direta ou indiretamente, prestaram seu apoio e/ou sua
+   colaboração na realização deste trabalho.
+   Ao CNPq pelo suporte financeiro.
+   E finalmente quero deixar meus profundos agradecimentos ao Instituto de
+   Física de São Carlos da Universidade de São Paulo, pela infra-estrutura e
+   excelente ambiente para a pesquisa científica, onde tive a honra de estudar,
+   pesquisar, trabalhar e conhecer grandes amigos.
+   RESUMO
+   Nesta tese são abordados, de maneira integrada, aspectos de paralelismo
+   em visão natural e artificial, com discussões críticas das diversas áreas
+   relacionadas. O paralelismo é discutido no sistema visual dos primatas, assim como
+   suas principais contribuições e motivações incentivando a incorporação de
+   paralelismo em sistemas de visão artificial. Um dos objetivos principais é fornecer
+   as bases de paralelismo para o desenvolvimento do projeto Cyvis-1, uma proposta
+   do Grupo de Pesquisa em Visão Cibernética (IFSC-USP) para visão versátil, com
+   forte motivação biológica e baseada no córtex visual dos primatas. Para tanto, foi
+   introduzida e implementada a proposta CVMP (Cybernetic Vision Message
+   Passage), um conjunto de ferramentas para o desenvolvimento de aplicações
+   paralelas em visão, tanto para sistemas distribuídos como para máquinas
+   multiprocessadores. Baseada em programação orientada a objetos, interação
+   homem-máquina, engenharia de software e programação visual, a proposta prima
+   pelo desenvolvimento de forma simples e amigável. O CVMP é testado, avaliado e
+   validado quanto a aspectos de funcionalidade e utilização, através da
+   implementação paralela de diversos algoritmos de visão computacional e de
+   processamento de imagens (operadores locais, transformada de Hough e
+   transformada de Fourier, entre outros) os quais, além de ilustrar a utilização da
+   ferramenta, são discutidos em termos de arquitetura e balanceamento de carga.
+   São apresentadas três aplicações reais de sistemas paralelos de visão
+   computacional, implementadas através do CVMP, demonstrando a eficiência da
+   ferramenta, na implementação paralela, na utilização e cooperação de trabalho.
+   Duas destas aplicações (integração de atributos visuais no projeto Cyvis-1 e um
+   modelo de complexidade com base na percepção humana), foram desenvolvidas
+   em conjunto com outros pesquisadores do Grupo de Pesquisa em Visão
+   Cibernética. A terceira aplicação apresenta uma proposta do autor para um sistema
+   automático de reconhecimento de plantas arbóreas (Botânica).
+   i
+   ii
+   ABSTRACT
+   This thesis addresses, in an integrated way, the concept and usage of
+   parallelism in natural and artificial vision. It starts by revising the primate visual
+   system, and discussing how its principles and solutions can be extended to
+   computational systems. One of the main objectives is to supply the parallelism
+   backbone for the development of the Cyvis-1 System, which is a proposal of the
+   Cybernetic Vision Research Group (IFSC-USP) for versatile vision, presenting a
+   strong biological motivation, especially regarding the primate visual cortex. In order
+   to achieve these objectives, the CVMP – Cybernetic Vision Message Passage – had
