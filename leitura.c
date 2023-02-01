@@ -3,6 +3,8 @@
 #include "string.h"
 #include "leitura_pag.h"
 #include <ctype.h>
+
+
 struct pagina
 {
     char p[1000][48];
