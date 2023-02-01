@@ -11,11 +11,11 @@ struct pagina
     int num_pal;
 };
 
-typedef struct slivro
+struct slivro
 {
     TPagina *ps[1000];
     int num_pag;
-} TLivro;
+};
 
 // imprime uma página
 void imprime_pagina(TPagina *p)

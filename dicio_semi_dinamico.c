@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "dicio_semi_dinamico.h"
 
 typedef struct sEstatistica {
     long buscas;
@@ -25,13 +26,18 @@ typedef struct sDicioSemiDinamico {
 
 
 // função que cria uma entrada
-Item criar_entrada(long chave, void* info){
+static Item criar_entrada(long chave, void* info){
     Item item;
     item.chave = chave;
     item.info = info;
     item.prox = NULL;
 
     return item;
+}
+
+static long proto_hash(DicioSemiDinamico* de, long chave, void* item){
+    long k = 0;
+    
 }
 
 // função de hashing
@@ -41,7 +47,7 @@ long hashing(DicioSemiDinamico* de, void* item){
     //for (long i = 0; i < de->tamanho; )
 }
 
-char inserir_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info){
+static char inserir_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info){
 
     if (de->pos[k].chave != NULL){ // malloc retorna NULL?
     // if (de->stats->v_colisoes[k]){
@@ -61,7 +67,7 @@ char inserir_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info
     }
 }
 
-Item* buscar_colisao_lista(DicioSemiDinamico* de, long chave, long k){
+static Item* buscar_colisao_lista(DicioSemiDinamico* de, long chave, long k){
     Item item = de->pos[k];
 
     if (item.chave){ 
