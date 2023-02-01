@@ -91,9 +91,9 @@ TPagina *lerPagina(FILE *fl, char **stopwords)
 
     while (estaNaPagina)
     {
-        fscanf(fl, "%*[^A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]");
+        fscanf(fl, "%*[^A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸåÅæÆœŒçÇðÐøØß]");
 
-        if ((fscanf(fl, "%49[A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]", palavra) != 1) || (!strcmp(palavra, "PA")))
+        if ((fscanf(fl, "%49[A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸåÅæÆœŒçÇðÐøØß]", palavra) != 1) || (!strcmp(palavra, "PA")))
         {
             break;
         }
@@ -105,8 +105,8 @@ TPagina *lerPagina(FILE *fl, char **stopwords)
         {
             strcpy(pagina->p[i], string);
             pagina->num_pal++;
+            i++;
         }
-        i++;
     }
 
     // condição de parada para a leitura de livros
