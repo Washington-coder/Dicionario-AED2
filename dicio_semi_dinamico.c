@@ -16,18 +16,17 @@ typedef struct sItem {
     struct sItem* prox;
 } Item;
 
-typedef struct sDicioEstatico {
+typedef struct sDicioSemiDinamico {
     Item* pos;
     long tamanho;
     long ocupacao;
     Estatistica* stats;
-} DicioEstatico;
+} DicioSemiDinamico;
 
 
 // função que cria uma entrada
 Item criar_entrada(long chave, void* info){
     Item item;
-    //long k = hashing(de, item);
     item.chave = chave;
     item.info = info;
     item.prox = NULL;
@@ -36,13 +35,13 @@ Item criar_entrada(long chave, void* info){
 }
 
 // função de hashing
-long hashing(DicioEstatico* de, void* item){
+long hashing(DicioSemiDinamico* de, void* item){
     long k = 0;
     // TODO
     //for (long i = 0; i < de->tamanho; )
 }
 
-char colisao_lista(DicioEstatico* de, long chave, long k, void* info){
+char inserir_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info){
 
     if (de->pos[k].chave != NULL){ // malloc retorna NULL?
     // if (de->stats->v_colisoes[k]){
@@ -62,9 +61,23 @@ char colisao_lista(DicioEstatico* de, long chave, long k, void* info){
     }
 }
 
+Item* buscar_colisao_lista(DicioSemiDinamico* de, long chave, long k){
+    Item item = de->pos[k];
+
+    if (item.chave){ 
+        Item* aux = item.prox;
+        while ((item.chave != chave) && (aux)){
+            aux = aux->prox;
+            item = *aux;
+        }
+        return &item; 
+    }
+    else{ return NULL; }
+}
+
 // função de criação de um dicionário estático
-DicioEstatico* criar_dicio_estatico(long tamanho){
-    DicioEstatico* de = malloc(sizeof(DicioEstatico));
+DicioSemiDinamico* criar_dicio_s_dinamico(long tamanho){
+    DicioSemiDinamico* de = malloc(sizeof(DicioSemiDinamico));
     de->tamanho = tamanho;
     de->ocupacao = 0;
 
@@ -79,21 +92,25 @@ DicioEstatico* criar_dicio_estatico(long tamanho){
 }
 
 // função de inserção em um dicionário estático
-char inserir_no_dicio_estatico(DicioEstatico* de, long chave, void* info){
+char inserir_no_dicio_s_dinamico(DicioSemiDinamico* de, long chave, void* info){
     long k = hashing(de, chave);
     
     // colisões:
-    colisao_lista(de, chave, k, info);
-    // colisao_vetor(de, chave, k, info);
+    inserir_colisao_lista(de, chave, k, info);
+    // inserir_colisao_vetor(de, chave, k, info);
 
     return 1;
 }
 
 // função de busca em um dicionário estático
-Item* buscar_dicio_estatico(DicioEstatico* de, void* info){
+Item* buscar_dicio_s_dinamico(DicioSemiDinamico* de, long chave, void* info){
     de->stats->buscas++;
 
-    long chave = hashing(de, info);
-    // TODO
+    long ch = hashing(de, chave);
+
+    // colisões
+    return buscar_colisao_lista(de, chave, ch);
+    // return buscar_colisão_vetor
+    
 }
 
