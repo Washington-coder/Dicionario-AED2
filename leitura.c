@@ -7,7 +7,44 @@ struct pagina
 {
     char p[1000][48];
     int num_pal;
+    int num_pagina;
+    TPalavra *listaPalavras;
 };
+struct palavra
+{
+    char nome[48];
+    int qtd_repeticoes;
+    int pagina;
+};
+
+TPalavra *criaListaPalavras(TPagina *pagina)
+{
+    if (pagina)
+    {
+        struct palavra *lista_de_palavras;
+        lista_de_palavras = (struct palavra *)malloc(pagina->num_pal*sizeof(struct palavra));
+
+        for (int i = 0; i < pagina->num_pal; i++){
+            strcpy(lista_de_palavras[i].nome, pagina->p[i]);
+            printf("palavra[%d]: %s\n", i, lista_de_palavras[i].nome);
+        }
+
+        // for (int i = 0; i < pagina->num_pal; i++)
+        // {
+        //     if (palavras == NULL)
+        //     {
+        //         palavras[indexPalavras] = malloc(sizeof(TPalavra));
+        //         strcpy(palavras[indexPalavras]->nome, pagina->p[i]);
+        //         palavras[indexPalavras]->pagina = pagina->num_pagina; 
+        //         indexPalavras++;
+        //     }else{
+        //         printf("\nnao eh null");   
+        //     }
+            
+        //     printf("Palavra[%d]: %s\n", i, pagina->p[i]);
+        // }
+    }
+}
 
 typedef struct slivro
 {
@@ -67,27 +104,27 @@ int ehStopword(char **stopwords, char *palavra)
     return 0;
 }
 
-char * passarParaMinusculo(char * palavra){
+char *passarParaMinusculo(char *palavra)
+{
 
-    char * string = malloc(strlen(palavra));
+    char *string = malloc(strlen(palavra));
 
     strcpy(string, palavra);
 
     for (int i = 0; i < strlen(string); i++)
     {
         string[i] = tolower(string[i]);
-        // printf("%c\n", string[i]);
     }
     return string;
 }
 
-TPagina *lerPagina(FILE *fl, char **stopwords)
+TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
 {
     char palavra[48];
     TPagina *pagina = criaPagina();
 
     short estaNaPagina = 1;
-    int i = 0;
+    int i = 0, paginaIndex = 0;
 
     while (estaNaPagina)
     {
@@ -98,7 +135,7 @@ TPagina *lerPagina(FILE *fl, char **stopwords)
             break;
         }
 
-        char * string = malloc(strlen(palavra));
+        char *string = malloc(strlen(palavra));
         strcpy(string, passarParaMinusculo(palavra));
 
         if (!ehStopword(stopwords, string))
@@ -114,7 +151,8 @@ TPagina *lerPagina(FILE *fl, char **stopwords)
     {
         return NULL;
     }
-
+    pagina->num_pagina = num_pagina;
+    pagina->listaPalavras = criaListaPalavras(pagina);
     return pagina;
 }
 
@@ -123,13 +161,13 @@ TLivro *lerLivro(FILE *fl, char **stopwords)
     TLivro *livro = malloc(sizeof(TLivro));
     livro->num_pag = 0;
 
-    TPagina *pagina = lerPagina(fl, stopwords);
-    pagina = lerPagina(fl, stopwords); // por melhorar k
+    TPagina *pagina = lerPagina(fl, stopwords, livro->num_pag);
+    pagina = lerPagina(fl, stopwords, livro->num_pag); // por melhorar k
     while (pagina)
     {
         livro->ps[livro->num_pag] = pagina;
         livro->num_pag++;
-        pagina = lerPagina(fl, stopwords);
+        pagina = lerPagina(fl, stopwords, livro->num_pag);
     }
     return livro;
 }
@@ -160,7 +198,7 @@ char **carregarStopwords()
 int main()
 {
     FILE *fl;
-    char *livro = "Paralelismo.base";
+    char *livro = "teste.base";
     fl = fopen(livro, "r");
 
     char **vetorDeStopWords = carregarStopwords();
