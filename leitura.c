@@ -14,22 +14,60 @@ struct palavra
 {
     char nome[48];
     int qtd_repeticoes;
-    int pagina;
+    int qtd_de_palavras;
 };
+
+int estaNaLista(TPalavra *lista_de_palavras, char * palavra, int qtd_de_palavras)
+{
+    
+    for (int i = 0; i < qtd_de_palavras; i++)
+    {
+        if (strcmp(palavra, lista_de_palavras[i].nome) == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 TPalavra *criaListaPalavras(TPagina *pagina)
 {
     if (pagina)
     {
+        int qtd_de_palavras = 0;
         struct palavra *lista_de_palavras;
-        lista_de_palavras = (struct palavra *)malloc(pagina->num_pal*sizeof(struct palavra));
 
-        for (int i = 0; i < pagina->num_pal; i++){
-            strcpy(lista_de_palavras[i].nome, pagina->p[i]);
-            printf("palavra[%d]: %s\n", i, lista_de_palavras[i].nome);
+        lista_de_palavras = (struct palavra *)malloc(pagina->num_pal * sizeof(struct palavra));
+
+        for (int i = 0; i < pagina->num_pal; i++)
+        {
+            if (i == 0)
+            {
+                strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
+                qtd_de_palavras++;
+            }
+            else
+            {
+                
+                if (!estaNaLista(lista_de_palavras, pagina->p[i], qtd_de_palavras))
+                {
+                    // printf("nao esta na lista\n");
+                    strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
+                    lista_de_palavras[qtd_de_palavras].qtd_repeticoes++;
+                    qtd_de_palavras++;
+                }
+                else
+                {
+                    lista_de_palavras[qtd_de_palavras].qtd_repeticoes++;
+                }
+            }
         }
 
-        
+        for (int i = 0; i < qtd_de_palavras; i++)
+        {
+            printf("palavra[%d]: %s\n", i, lista_de_palavras[i].nome);
+            printf("numero de repeticoes: %d\n", lista_de_palavras[i].qtd_repeticoes);
+        }
     }
 }
 
