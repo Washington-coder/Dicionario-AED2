@@ -29,20 +29,7 @@ TPalavra *criaListaPalavras(TPagina *pagina)
             printf("palavra[%d]: %s\n", i, lista_de_palavras[i].nome);
         }
 
-        // for (int i = 0; i < pagina->num_pal; i++)
-        // {
-        //     if (palavras == NULL)
-        //     {
-        //         palavras[indexPalavras] = malloc(sizeof(TPalavra));
-        //         strcpy(palavras[indexPalavras]->nome, pagina->p[i]);
-        //         palavras[indexPalavras]->pagina = pagina->num_pagina; 
-        //         indexPalavras++;
-        //     }else{
-        //         printf("\nnao eh null");   
-        //     }
-            
-        //     printf("Palavra[%d]: %s\n", i, pagina->p[i]);
-        // }
+        
     }
 }
 
