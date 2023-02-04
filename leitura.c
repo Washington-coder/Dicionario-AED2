@@ -8,7 +8,7 @@
 // Struct tipo página, que contém um vetor de strings, e o número de strings que possui
 struct pagina
 {
-    char p[1000][48];
+    char **p;
     int num_pal;
     int num_pagina;
     TPalavra *listaPalavras;
@@ -133,6 +133,7 @@ TPagina *criaPagina()
 {
     TPagina *pagina = malloc(sizeof(TPagina));
     pagina->num_pal = 0;
+    pagina->p = (char **)malloc(1 * sizeof(char *));
     return pagina;
 }
 
@@ -178,7 +179,7 @@ TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
     TPagina *pagina = criaPagina();
 
     short estaNaPagina = 1;
-    int i = 0, paginaIndex = 0;
+    int i = 0;
 
     while (estaNaPagina)
     {
@@ -201,6 +202,8 @@ TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
         if (!ehStopword(stopwords, string))
         {
             // Se não, adiciona na página
+            pagina->p = (char **)realloc(pagina->p, (pagina->num_pal + 1) * sizeof(char *));
+            pagina->p[i] = (char *)malloc((strlen(string) + 1) * sizeof(char));
             strcpy(pagina->p[i], string);
             pagina->num_pal++;
             i++;
