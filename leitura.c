@@ -21,57 +21,91 @@ struct palavra
     int qtd_de_palavras;
 };
 
+
+// Checa se uma palavra está na lista de palavras (únicas)
 int estaNaLista(TPalavra *lista_de_palavras, char * palavra, int qtd_de_palavras)
 {
     
     for (int i = 0; i < qtd_de_palavras; i++)
     {
+        //printf("%s\t%s %d\n", palavra, lista_de_palavras[i].nome, i);
         if (strcmp(palavra, lista_de_palavras[i].nome) == 0)
         {
-            return 1;
+            return i;
         }
     }
-    return 0;
+    return -1;
 }
 
+// 
+void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
+    
+    printf("PÁGINA\n");
+    for (int i = 0; i < qtd_de_palavras; i++)
+    {
+        printf("palavra[%d]: %s\t", i, lista_de_palavras[i].nome);
+        printf("repete: %d vezes\n", lista_de_palavras[i].qtd_repeticoes);
+    }
+    printf("\n");
+}
+
+// Cria lista de palavras (únicas)
 TPalavra *criaListaPalavras(TPagina *pagina)
 {
     if (pagina)
     {
-        int qtd_de_palavras = 0;
+        int qtd_de_palavras = 0, indice = 0;
         struct palavra *lista_de_palavras;
+        char* espaco = " ";
 
         lista_de_palavras = (struct palavra *)malloc(pagina->num_pal * sizeof(struct palavra));
+        //lista_de_palavras[0] = NULL;
 
+        //printf("\n\t\tP Á G I N A\n");
         for (int i = 0; i < pagina->num_pal; i++)
         {
-            if (i == 0)
-            {
-                strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
-                qtd_de_palavras++;
-            }
-            else
-            {
-                
-                if (!estaNaLista(lista_de_palavras, pagina->p[i], qtd_de_palavras))
+            
+            if (pagina->p[i][0]){
+                //printf("%s\t", pagina->p[i]);
+
+                // Inicializa a lista de palavras
+                if (!qtd_de_palavras)
                 {
-                    // printf("nao esta na lista\n");
-                    strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
-                    lista_de_palavras[qtd_de_palavras].qtd_repeticoes++;
+                    strcpy(lista_de_palavras[0].nome, pagina->p[i]);
+                    lista_de_palavras[0].qtd_repeticoes = 1;
                     qtd_de_palavras++;
+                    
+                    //printf("primeira: %s\tq: %d\ti: %d\tr: %d\n", pagina->p[i], qtd_de_palavras, i, lista_de_palavras[0].qtd_repeticoes);
                 }
+
                 else
                 {
-                    lista_de_palavras[qtd_de_palavras].qtd_repeticoes++;
+                    indice = estaNaLista(lista_de_palavras, pagina->p[i], qtd_de_palavras);
+                    //printf("%s",lista_de_palavras[0].nome);
+                    //printf("indice: %d, %s == %s\t", indice, pagina->p[i], lista_de_palavras[qtd_de_palavras].nome);
+
+                    // Adiciona palavra à lista de palavras
+                    if (indice == -1)
+                    {
+                        // printf("nao esta na lista\n");
+                        strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
+                        lista_de_palavras[qtd_de_palavras].qtd_repeticoes = 1;
+                        qtd_de_palavras++;
+
+                        //printf("new - r: %d\tq: %d\t",lista_de_palavras[qtd_de_palavras].qtd_repeticoes, qtd_de_palavras );
+
+                    }
+
+                    else
+                    {
+                        lista_de_palavras[indice].qtd_repeticoes++;
+                        //printf("rep - r: %d\tq: %d\t",lista_de_palavras[indice].qtd_repeticoes, qtd_de_palavras );
+                    }
                 }
+                //printf("\n");
             }
         }
-
-        for (int i = 0; i < qtd_de_palavras; i++)
-        {
-            printf("palavra[%d]: %s\n", i, lista_de_palavras[i].nome);
-            printf("numero de repeticoes: %d\n", lista_de_palavras[i].qtd_repeticoes);
-        }
+        imprime_lista_palavras(lista_de_palavras, qtd_de_palavras);
     }
 }
 
@@ -162,6 +196,7 @@ TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
     {
         // Ler tudo que não for uma palavra com caracteres comuns, e descarta
         fscanf(fl, "%*[^A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]");
+        //fscanf(fl, "%*[\t]");
 
         // Ler a palavra, e checar se chegou no fim do arquivo, ou se é igual ao marcador "PA"
         if ((fscanf(fl, "%49[A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]", palavra) != 1) || (!strcmp(palavra, "PA")))
@@ -180,8 +215,8 @@ TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
             // Se não, adiciona na página
             strcpy(pagina->p[i], string);
             pagina->num_pal++;
+            i++;
         }
-        i++;
     }
 
     // condição de parada para a leitura de livros (na função lerLivro(.))
