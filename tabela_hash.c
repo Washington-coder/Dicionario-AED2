@@ -29,6 +29,8 @@ struct sDicioSemiDinamico {
 };
 
 
+// FUNÇÕES ESPECIALISTAS =================================================================================================
+
 // ESPECIALISTA: Recebe um dado em ponteiro void e retorna a string correspondente
 char* cast_string(void* info){
     char* palavra = malloc(sizeof(char) * 48);
@@ -54,13 +56,71 @@ long proto_hash(long tamanho, void* info){
 }
 
 
+// ESPECIALISTA: Imprime um item quando suas informações forem uma string
+void imprime_item(Item* item){
+    if (item){
+        printf("%s (chave: %ld)\n", cast_string(item->info), item->chave);
+    }
+}
+
+
+// ESPECIALISTA: Imprime os conteúdos do dicionário, caso a informação seja uma string
+void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd){
+    Item** item = dsd->pos, *aux;
+    long n = 0;
+
+    printf("CONTEÚDOS DO DICIONÁRIO:\n");
+    for (long i = 0; i < dsd->tamanho; i++){
+
+        if (item[i]){
+
+            printf("índice [%ld]\n", i);
+
+            aux = item[i];
+            n = 0;
+
+            while (aux){
+                printf("[pos %ld - %s] ", n, cast_string(aux->info));
+                aux = aux->prox;
+                n++;
+            }
+            printf("\n");
+        }
+    }
+    printf("\n");
+}
+
+
+// ESPECIALISTA: Compara duas infos, quando ambas forem strings
+char compara_string(void* info1, void* info2){
+    return strcmp(cast_string(info1), cast_string(info2));
+}
+
+
+// Imprime os dados estatísticos do dicionário
+void imprime_stats(DicioSemiDinamico* dsd){
+    
+    printf("DADOS ESTATÍSTICOS DO DICIONÁRIO:\n");
+
+    printf("Fator de Carga: %ld\n\tColisões: %ld", dsd->stats->f_carga, dsd->stats->colisoes);
+    printf("\tBuscas: %ld\tComparações: %ld\n", dsd->stats->buscas, dsd->stats->comparacoes);
+    printf("Colisões por posição:\n");
+
+    for (long i = 0; i < dsd->tamanho; i++){
+        if (dsd->stats->v_colisoes[i]){
+            printf("[pos %ld - %ld]\t", i, dsd->stats->v_colisoes[i]);
+        }
+    }
+    printf("\n");
+}
+
+
 // Função hash - apelido para a real função hash, que pode ser uma diferente no futuro
 long hash(long tamanho, void* info){
     //printf("%s\n", cast_string(info));
     
     return proto_hash(tamanho, info);
 }
-
 
 // Cria o dicionário
 DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam){
@@ -139,49 +199,63 @@ void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
 }
 
 
-// ESPECIALISTA: Imprime os conteúdos do dicionário, caso a informação seja uma string
-void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd){
-    Item** item = dsd->pos, *aux;
+// Função de comparação
+char compara(void* info1, void* info2){
+    return compara_string(info1, info2);
+}
+
+
+// Função de busca por um item em um dicionário
+Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
+    long k = hash(dsd->tamanho, info);
     long n = 0;
+    Item* aux;
+    
+    dsd->stats->buscas++;
 
-    printf("CONTEÚDOS DO DICIONÁRIO:\n");
-    for (long i = 0; i < dsd->tamanho; i++){
+    for (long i = 0; i < dsd->stats->v_colisoes[k]+1; i++){
+        //printf("%ld aqui?\n", k);
+        if (dsd->pos[k]){
+            if (!compara(dsd->pos[k]->info, info)){
+                dsd->stats->comparacoes++;
+                //printf("Encontrou %s, indice %ld pos %ld\n", cast_string(dsd->pos[k]->info), k, n);
+                return dsd->pos[k];
+            }
 
-        if (item[i]){
+            else if (dsd->pos[k]->info){
+                aux = dsd->pos[k];
 
-            printf("índice [%ld]\n", i);
+                while ((aux) && (compara(aux->info,info))){
+                    dsd->stats->comparacoes++;
+                    aux = aux->prox;
+                }
 
-            aux = item[i];
+                if (aux){
+                    //printf("Encontrou %s, indice %ld pos %ld\n", cast_string(aux->info), k, n);
+                    return aux;
+                }
+            }
             n = 0;
 
-            while(aux){
-                printf("[pos %ld - %s] ", n, cast_string(aux->info));
-                aux = aux->prox;
-                n++;
-            }
-            printf("\n\n");
         }
     }
+    //printf("%s? Não encontrado\n", cast_string(info));
+
+    return NULL;
 }
 
 
-// Imprime os dados estatísticos do dicionário
-void imprime_stats(DicioSemiDinamico* dsd){
+void teste_de_busca(DicioSemiDinamico* dsd, char* pal){
+    //char pal[48] = pal;
+    printf("####################################\n");
+    printf("BUSCANDO POR \"%s\"", pal);
+
+    imprime_item(buscar_no_dicio_sd(dsd, pal));
     
-    printf("\n\nDADOS ESTATÍSTICOS DO DICIONÁRIO:\n");
-
-    printf("Fator de Carga: %ld\n\tColisões: %ld", dsd->stats->f_carga, dsd->stats->colisoes);
-    printf("\tBuscas: %ld\tComparações: %ld\n", dsd->stats->buscas, dsd->stats->comparacoes);
-    printf("Colisões por posição:\n");
-
-    for (long i = 0; i < dsd->tamanho; i++){
-        if (dsd->stats->v_colisoes[i]){
-            printf("[pos %ld - %ld]\t", i, dsd->stats->v_colisoes[i]);
-        }
-    }
-    printf("\n");
+    printf("DADOS DEPOIS DA BUSCA: \n");
+    imprime_stats(dsd);
+    printf("####################################\n");
 }
-
 
 int main(){
     DicioSemiDinamico* dsd = criar_dicio_sd(3, 101);
@@ -201,6 +275,13 @@ int main(){
     //printf("\t%ld %s\t%s\t%s\n", dsd->stats->v_colisoes[0],
     //cast_string(dsd->pos[46]->info),cast_string(dsd->pos[14]->info)
     //,cast_string(dsd->pos[11]->info));
+
     imprime_dicio_sd_encadeado(dsd);
     imprime_stats(dsd);
+    
+    teste_de_busca(dsd, "dor");
+    teste_de_busca(dsd, "felicidade");
+    teste_de_busca(dsd, "sofrimento");
+    teste_de_busca(dsd, "paz");
+    teste_de_busca(dsd, "dor");
 }
