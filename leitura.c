@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
+#include "tab_hash.h"
 #include <ctype.h>
 
 
