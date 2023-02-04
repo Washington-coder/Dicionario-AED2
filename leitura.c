@@ -58,15 +58,13 @@ TPalavra *criaListaPalavras(TPagina *pagina)
         struct palavra *lista_de_palavras;
         char* espaco = " ";
 
-        lista_de_palavras = (struct palavra *)malloc(pagina->num_pal * sizeof(struct palavra));
-        //lista_de_palavras[0] = NULL;
+        lista_de_palavras = (struct palavra *)malloc(1 * sizeof(struct palavra));
 
         //printf("\n\t\tP Á G I N A\n");
         for (int i = 0; i < pagina->num_pal; i++)
         {
             
             if (pagina->p[i][0]){
-                //printf("%s\t", pagina->p[i]);
 
                 // Inicializa a lista de palavras
                 if (!qtd_de_palavras)
@@ -75,34 +73,24 @@ TPalavra *criaListaPalavras(TPagina *pagina)
                     lista_de_palavras[0].qtd_repeticoes = 1;
                     qtd_de_palavras++;
                     
-                    //printf("primeira: %s\tq: %d\ti: %d\tr: %d\n", pagina->p[i], qtd_de_palavras, i, lista_de_palavras[0].qtd_repeticoes);
                 }
-
                 else
                 {
                     indice = estaNaLista(lista_de_palavras, pagina->p[i], qtd_de_palavras);
-                    //printf("%s",lista_de_palavras[0].nome);
-                    //printf("indice: %d, %s == %s\t", indice, pagina->p[i], lista_de_palavras[qtd_de_palavras].nome);
 
-                    // Adiciona palavra à lista de palavras
                     if (indice == -1)
                     {
-                        // printf("nao esta na lista\n");
+                        lista_de_palavras = (struct palavra *)realloc(lista_de_palavras, (qtd_de_palavras + 1) * sizeof(struct palavra));
                         strcpy(lista_de_palavras[qtd_de_palavras].nome, pagina->p[i]);
                         lista_de_palavras[qtd_de_palavras].qtd_repeticoes = 1;
                         qtd_de_palavras++;
-
-                        //printf("new - r: %d\tq: %d\t",lista_de_palavras[qtd_de_palavras].qtd_repeticoes, qtd_de_palavras );
-
                     }
 
                     else
                     {
                         lista_de_palavras[indice].qtd_repeticoes++;
-                        //printf("rep - r: %d\tq: %d\t",lista_de_palavras[indice].qtd_repeticoes, qtd_de_palavras );
                     }
                 }
-                //printf("\n");
             }
         }
         imprime_lista_palavras(lista_de_palavras, qtd_de_palavras);
