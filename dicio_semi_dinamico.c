@@ -26,7 +26,6 @@ typedef struct sDicioSemiDinamico {
     long tamanho;           // tamanho reservado para o dicionário
     long ocupacao;          // a quantidade de posições ocupadas por ele
     Estatistica* stats;     // estatísticas 
-    // TCompara
 } DicioSemiDinamico;
 
 
@@ -42,15 +41,14 @@ static Item criar_entrada(long chave, void* info){
 
 // função hash de teste
 static long proto_hash(DicioSemiDinamico* de, long chave, void* item){
-    long k = chave + 1;
-    return k;
+    long k = 0;
     // TODO
     
 }
 
 // função de hashing
-long hashing(DicioSemiDinamico* de, long chave, void* item){
-    return proto_hash(de, chave, item);
+long hashing(DicioSemiDinamico* de, void* item){
+    long k = 0;
     // TODO
     //for (long i = 0; i < de->tamanho; )
 }
@@ -60,7 +58,7 @@ long hashing(DicioSemiDinamico* de, long chave, void* item){
 static char inserir_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info){
 
     // checa se não é vazio
-    if (de->pos[k].info != NULL){ // malloc retorna NULL?
+    if (de->pos[k].chave != NULL){ // malloc retorna NULL?
     // if (de->stats->v_colisoes[k]){
         de->stats->colisoes++;
 
@@ -93,23 +91,23 @@ static char inserir_colisao_vetor(DicioSemiDinamico* de, long chave, long k, voi
 
 // Lida com colisões durante a busca, usando listas encadeadas
 static Item* buscar_colisao_lista(DicioSemiDinamico* de, long chave, long k, void* info){
-    Item* item = &de->pos[k];
+    Item item = de->pos[k];
 
     // Checa se a posição está vazia
-    if (item->info){
+    if (item.info){
     // if (item.chave){ 
-        Item* aux = item;
+        Item* aux = item.prox;
 
         // compara as infos e caminha pela lista encadeada
-        while ((item->info != info) && (aux)){  // TODO solução temporária
+        while ((item.info != info) && (aux)){   // TODO solução temporária
                                                 // tem que ser substituído por uma função especialista de comparação
             aux = aux->prox;
-            item = aux;
+            item = *aux;
         }
 
         // Retorna o item, se achou
-        if (item->info == info) {
-            return item; 
+        if (item.info == info) {
+            return &item; 
         }
         else {
             return NULL;
@@ -139,7 +137,7 @@ DicioSemiDinamico* criar_dicio_s_dinamico(long tamanho){
 // função de inserção em um dicionário estático
 char inserir_no_dicio_s_dinamico(DicioSemiDinamico* de, long chave, void* info){
     // Gera o índice no dicionário pro meio de hashing
-    long k = hashing(de, chave, info);
+    long k = hashing(de, chave);
     
     // colisões:
     inserir_colisao_lista(de, chave, k, info);
@@ -152,7 +150,7 @@ char inserir_no_dicio_s_dinamico(DicioSemiDinamico* de, long chave, void* info){
 Item* buscar_dicio_s_dinamico(DicioSemiDinamico* de, long chave, void* info){
     de->stats->buscas++;
 
-    long ch = hashing(de, chave, info);
+    long ch = hashing(de, chave);
 
     // colisões
     Item* item = buscar_colisao_lista(de, chave, ch, info);
