@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
+#include "dicio_semi_dinamico.h"
 #include <ctype.h>
 
 
@@ -52,10 +53,10 @@ void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavr
 // Cria lista de palavras (únicas)
 TPalavra *criaListaPalavras(TPagina *pagina)
 {
+    TPalavra *lista_de_palavras = NULL;
     if (pagina)
     {
         int qtd_de_palavras = 0, indice = 0;
-        struct palavra *lista_de_palavras;
         char* espaco = " ";
 
         lista_de_palavras = (struct palavra *)malloc(pagina->num_pal * sizeof(struct palavra));
@@ -106,18 +107,20 @@ TPalavra *criaListaPalavras(TPagina *pagina)
             }
         }
         imprime_lista_palavras(lista_de_palavras, qtd_de_palavras);
+        //pagina->listaPalavras = lista_de_palavras;
     }
+    return lista_de_palavras;
 }
 
 // Struct tipo livro, que contém um vetor de tipos-página, e o número de páginas que possui
-typedef struct slivro
+struct slivro
 {
     TPagina *ps[1000];// TODO - tornar dinâmico, usando a quantidade de páginas do livro
     int num_pag;
-} TLivro;
+};
 
 // imprime uma página
-void printPag(TPagina *pagina)
+void imprime_pagina(TPagina *pagina)
 {
     for (int j = 0; j < pagina->num_pal; j++)
     {
@@ -133,7 +136,7 @@ void imprime_livro(TLivro *l)
     {
         printf("PÁGINA %d ###########\n", i + 1);
         printf("NÚMERO DE PALAVRAS: %d \n", l->ps[i]->num_pal);
-        printPag(l->ps[i]);
+        imprime_pagina(l->ps[i]);
         printf("\n\n");
     }
 
@@ -260,11 +263,11 @@ TLivro *lerLivro(FILE *fl, char **stopwords)
 
 
 // Cria e retorna um vetor de stopwords
-char **carregarStopwords()
+char **carregarStopwords(char* livro)
 {
     // Abre arquivo de stopwords
     FILE *fl;
-    char *livro = "stopwords_br.txt";
+    
     fl = fopen(livro, "r");
     int i;
 
@@ -293,14 +296,18 @@ int main()
     FILE *fl;
     char *livro = "teste.base";
     fl = fopen(livro, "r");
+    char *stpw = "stopwords_br.txt";
 
     // Ler e criar um vetor de stop words
-    char **vetorDeStopWords = carregarStopwords();
+    char **vetorDeStopWords = carregarStopwords(stpw);
 
     // Ler livro
     TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
     imprime_livro(lido);
+
+    printf("\n\n%s\n", lido->ps[1]->listaPalavras[49].nome);
+    
 }
 
 // chcp 65001
