@@ -97,6 +97,8 @@ char compara_string(void* info1, void* info2){
 }
 
 
+// FUNÇÕES GERAIS ========================================================================================================
+
 // Imprime os dados estatísticos do dicionário
 void imprime_stats(DicioSemiDinamico* dsd){
     
