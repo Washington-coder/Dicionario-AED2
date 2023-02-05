@@ -23,10 +23,10 @@ struct sItem {
 
 
 struct sDicioSemiDinamico {
-    Item** pos;              // vetor de itens (o ideal seria um vertor de ponteiros para itens)
-    Estatistica* stats;     // estatísticas 
     long tamanho;           // tamanho reservado para o dicionário
     long ocupacao;          // a quantidade de posições ocupadas por ele
+    Item** pos;              // vetor de itens (o ideal seria um vertor de ponteiros para itens)
+    Estatistica* stats;     // estatísticas 
 };
 
 
@@ -142,11 +142,32 @@ void* retorna_info(Item* item){
 }
 
 void* retorna_stats(DicioSemiDinamico* dsd){
-    struct estatistica* stats = malloc(sizeof(struct estatisitca*));
+    //struct estatistica* stats = malloc(sizeof(struct estatisitca*));
     //stats = dsd->stats;
     //memcpy(stats, dsd->stats, sizeof(dsd->stats));
     //stats->v_colisoes = NULL;
     return dsd->stats;
+}
+
+
+
+DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
+    double diferenca = dsd->stats->maior_colisao/(double)dsd->stats->f_carga;
+    if (diferenca > 1.2){
+    //if (dsd->stats->maior_colisao > dsd->stats->f_carga){
+        //printf("\nOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\ndeu ruim\n");
+        printf("\n[%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
+
+        // dsd->pos = realloc(dsd->pos, (dsd->tamanho * diferenca) * sizeof(Item*));
+        // dsd->tamanho *= diferenca;
+        // dsd->stats->v_colisoes = realloc(dsd->stats->v_colisoes, (dsd->tamanho * diferenca) * sizeof(long));
+        
+        // FAZER UM NOVO DICIO, REINSERIR OS DADOS
+        printf("\nnovo: [%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
+
+        return dsd;
+    }
+    return NULL;
 }
 
 // Cria um item com chave e informação
@@ -243,6 +264,7 @@ void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     // Lida com as colisões
     else{
         insecao_encadeamento(dsd, k, item);
+        rehashing(dsd);
     }
 }
 
@@ -296,10 +318,6 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     return NULL;
 }
 
-
-DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
-
-}
 
 
 void teste_de_busca(DicioSemiDinamico* dsd, char* pal){

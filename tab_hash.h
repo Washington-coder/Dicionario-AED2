@@ -18,6 +18,8 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info);
 // Função hash - apelido para a real função hash, que pode ser uma diferente no futuro
 long hash(long tamanho, void* info);
 
+DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd);
+
 // Função de comparação
 char compara(void* info1, void* info2);
 

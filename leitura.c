@@ -44,6 +44,11 @@ typedef struct stats{
     long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
 } Stats;
 
+typedef struct dim{
+    long tamanho;
+    long ocupacao;
+} Dimensoes;
+
 // 
 void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
     
@@ -340,17 +345,21 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
 
 DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
     DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag);
-
+    long ultrapassou = 0;
     for (int i = 0; i < lido->num_pag; i++){
         printf("\n#################### PÁGINA %d\n", i);
         DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
-        printf("\n\n");
+        //printf("\n\n");
         
         //imprime_dicio_sd_encadeado(dsd);
-        imprime_stats(dsd, 1);
+        imprime_stats(dsd, 0);
+        if (rehashing(dsd)){
+            ultrapassou++;
+        };
         lista_dsd[i] = dsd;
         
     }
+    printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n%ld\n", ultrapassou);
     return lista_dsd;
 }
 
@@ -376,15 +385,19 @@ int main()
     // //printf("aaa");
     // imprime_stats(dsd, 1);
 
-    DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
+    //DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
     printf("\n");
+    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 244);
+    Dimensoes* dim = (void*) dsd;
+    printf("%ld\n", dim->ocupacao);
+    /*
     Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
     TPalavra* p = retorna_info(item);
     printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
 
     Stats* stats = retorna_stats(lista_dsd[292]);
     printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
-
+    */
 }
 
 // chcp 65001

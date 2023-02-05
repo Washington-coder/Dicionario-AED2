@@ -44,3 +44,4 @@ long tfidf(TPalavra* palavra, TPagina* pagina, TLivro* livro){
     // retorna um vetor de tamanho 5, com os maiores TF-IDFs
     return tf(palavra, pagina) * idf(palavra, livro);
 }
+
