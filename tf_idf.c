@@ -110,8 +110,9 @@ double idf(char *palavra, TLivro *livro)
 }
 
 // retorna o TF-IDF (com dicionário)
-long tfidf(TPalavra *palavra, TPagina *pagina, TLivro *livro)
+double tfidf(char *palavra, TPagina *pagina, TLivro *livro, DicioSemiDinamico *dsd)
 {
     // retorna um vetor de tamanho 5, com os maiores TF-IDFs
     // return tf(palavra, pagina, dsd) * idf(palavra, livro);
+    return tf(palavra, pagina, dsd) * idf(palavra, livro);
 }

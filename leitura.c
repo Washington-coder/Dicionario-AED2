@@ -372,7 +372,7 @@ int main()
 
     //imprime_livro(lido);
 
-    // DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0);
+    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0);
     // imprime_dicio_sd_encadeado(dsd);
     // //printf("aaa");
     // imprime_stats(dsd, 1);
@@ -389,6 +389,9 @@ int main()
 
     double num_idf = idf("universidade", lido);
     printf("num_idf: %lf\n", num_idf); 
+
+    double num_tfidf = tfidf("universidade", lido->ps[0], lido, dsd);
+    printf("tfidf: %lf\n", num_tfidf);
 
     // Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
     // TPalavra* p = retorna_info(item);
