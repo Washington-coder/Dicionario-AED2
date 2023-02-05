@@ -52,7 +52,7 @@ long proto_hash(long tamanho, void* info){
         k += palavra[i] * peso;
         //printf("%ld\t%ld\n", peso, k);
     }
-    k = k % tamanho;
+    k = abs(k % tamanho);
     //printf("%ld\n", k);
     return k;
 }
