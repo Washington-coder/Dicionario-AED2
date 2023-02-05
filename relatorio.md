@@ -3,8 +3,8 @@
 
 ***Resumo.*** *O trabalho se trata de alguma coisa bem interessante e chato de se usar, a não ser que voce use python*
 
-### **1.Dicionários**
-Os dicionário são um tipo abstrato de dados orientados a conteúdo, e considerando que se tratam do tem principal de estudo do trabalho, é importante salientar pontos importantes deles.
+## **1.Dicionários**
+Os dicionário são um tipo abstrato de dados orientados a conteúdo, e considerando que se tratam do tema principal de estudo do trabalho, é importante salientar pontos importantes deles.
 
 Operações implementadas:
 
