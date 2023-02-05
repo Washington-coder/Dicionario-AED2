@@ -3,6 +3,7 @@
 #include "string.h"
 #include "leitura_pag.h"
 #include "tab_hash.h"
+#include "math.h"
 
 // Tipo contendo o dicionário de palavras, com suas ocorrências e páginas
 typedef struct sLivro
@@ -99,11 +100,13 @@ long int n_containing(char *palavra, TLivro *livro)
 }
 
 // retorna o quão comum é uma palavra em uma série de páginas (tpalavra, tlivro)
-long idf(TPalavra *palavra, TLivro *livro)
+double idf(char *palavra, TLivro *livro)
 {
     // log do
     // número total de páginas / número de páginas em que a palavra aparece + 1
     // log(num_págs/ n_containing())
+    double result = log(livro->num_pag/n_containing(palavra, livro));
+    return result;
 }
 
 // retorna o TF-IDF (com dicionário)

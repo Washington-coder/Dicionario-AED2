@@ -387,6 +387,9 @@ int main()
     long int num_con = n_containing("universidade", lido);
     printf("n_containing: %d\n", num_con); 
 
+    double num_idf = idf("universidade", lido);
+    printf("num_idf: %lf\n", num_idf); 
+
     // Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
     // TPalavra* p = retorna_info(item);
     // printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
