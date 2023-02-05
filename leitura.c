@@ -346,14 +346,14 @@ int main()
 
     // //palavra = lido->ps[0]->listaPalavras;
     // printf("%d\n", lido->ps[0]->listaPalavras[0].qtd_de_palavras);//->listaPalavras[0]);
-    
+
     for (int i = 0; i < tam; i++){
         
         //TPalavra* palavra = ;
-        printf("%d\n", i);
-        TPalavra* palavra;// = malloc(sizeof(lido->ps[0]->listaPalavras[i]));
+        //printf("%d\n", i);
+        TPalavra* palavra = &lido->ps[0]->listaPalavras[i];// = malloc(sizeof(lido->ps[0]->listaPalavras[i]));
         
-        printf("aqui? %d\n",lido->ps[0]->listaPalavras[i].qtd_de_palavras);
+        //printf("aqui? %d\n",);
         inserir_no_dicio_sd(dsd, palavra);
         //free(palavra);
     }
