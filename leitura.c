@@ -305,61 +305,60 @@ char **carregarStopwords()
     return stopwords;
 }
 
-// Function to check if a number is prime
-bool is_prime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i <= sqrt(n); i++) {
-        if (n % i == 0) return false;
-    }
-    return true;
-}
 
-// Function to find the closest greater prime number
-int closest_greater_prime(int n) {
-    int i = n + 1;
-    while (!is_prime(i)) {
-        // Keep incrementing the number until it is prime
-        i++;
-    }
-    return i;
-}
-
-
-DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
+DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k, long f_carga){
 
     long tam = lido->ps[k]->listaPalavras->num_lista;
     long primo_tam = closest_greater_prime(tam);
 
-    DicioSemiDinamico* dsd = criar_dicio_sd(5, primo_tam);
-    // printf("%ld\n", tam);
-
-    for (int i = 0; i < tam; i++){
-        //printf("i: %d\n", i);
+    DicioSemiDinamico* dsd = criar_dicio_sd(f_carga, primo_tam);
+    DicioSemiDinamico* new_dsd; // = malloc();
+    
+    new_dsd = dsd;
+    for (int i = 0; i < tam; i++){ 
         TPalavra* palavra = &lido->ps[k]->listaPalavras->lista[i];
+        inserir_no_dicio_sd(dsd, palavra);            // se tudo der errado
 
-        inserir_no_dicio_sd(dsd, palavra);
+        /*
+        // INSERÇÃO COM REDIMENSIONAMENTO
+        if (dsd == new_dsd){
+            printf("aquioo?\n");
+            new_dsd = inserir_no_dicio_sd(dsd, palavra);
+            //printf("%ld\n", new_dsd.)
+        }
+        else {
+            printf("aqui?\n");
+            new_dsd = inserir_no_dicio_sd(new_dsd, palavra);
+        }
+        dsd = new_dsd;
+        */
+
     }
-    return dsd;
+    //new_dsd = rehashing(dsd);
+    new_dsd = dsd;
+    return new_dsd;
 }
 
 
-DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
-    DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag);
+DicioSemiDinamico** criar_dicio_livro(TLivro* lido, long f_carga){
+    DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag), *new_dsd;
     long ultrapassou = 0;
     for (int i = 0; i < lido->num_pag; i++){
         printf("\n#################### PÁGINA %d\n", i);
-        DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
+        DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i,f_carga);
         //printf("\n\n");
         
         //imprime_dicio_sd_encadeado(dsd);
-        imprime_stats(dsd, 0);
-        if (rehashing(dsd)){
+        new_dsd = rehashing(dsd);
+        if (new_dsd){
             ultrapassou++;
+            dsd = new_dsd;
         };
         lista_dsd[i] = dsd;
+        imprime_stats(dsd, 0);
         
     }
-    printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n%ld\n", ultrapassou);
+    printf("Dicionários redimensionados:\t%ld\n", ultrapassou);
     return lista_dsd;
 }
 
@@ -385,19 +384,29 @@ int main()
     // //printf("aaa");
     // imprime_stats(dsd, 1);
 
-    //DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
+    DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido, 3);
     printf("\n");
-    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 244);
-    Dimensoes* dim = (void*) dsd;
-    printf("%ld\n", dim->ocupacao);
+
     /*
-    Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
+    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 244);
+    
+    Dimensoes* dim = (void*) dsd;
+    printf("o: %ld, t: %ld\n", dim->ocupacao, dim->tamanho);
+    imprime_stats(dsd, 1);
+    TPalavra* rem = remove_do_dicio_sd(dsd, "escravos");
+    printf("%s\n", rem->nome);
+    */
+
+    long indice = lido->num_pag-1;
+    Item* item = buscar_no_dicio_sd(lista_dsd[indice], "cher", 1);
     TPalavra* p = retorna_info(item);
     printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
 
-    Stats* stats = retorna_stats(lista_dsd[292]);
+    Stats* stats = retorna_stats(lista_dsd[indice]);
     printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
-    */
+
+    imprime_stats(lista_dsd[indice], 1);
+    
 }
 
 // chcp 65001

@@ -10,10 +10,12 @@ typedef struct sEstatistica Estatistica;
 DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam);
 
 // Função de inserção no dicionário 
-void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info);
+DicioSemiDinamico* inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info);
 
 // Função de busca por um item em um dicionário
-Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info);
+Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info, char imprimir);
+
+void* remove_do_dicio_sd(DicioSemiDinamico* dsd, void* info);
 
 // Função hash - apelido para a real função hash, que pode ser uma diferente no futuro
 long hash(long tamanho, void* info);
@@ -44,3 +46,5 @@ char compara_string(void* info1, void* info2);
 
 // Imprime os dados estatísticos do dicionário
 void imprime_stats(DicioSemiDinamico* dsd, char vetor);
+
+int closest_greater_prime(int n);

@@ -2,6 +2,9 @@
 #include "stdlib.h"
 #include "string.h"
 #include "tab_hash.h"
+#include <math.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 struct sEstatistica {
     long buscas;            // Número total de buscas
@@ -17,6 +20,7 @@ struct sItem {
     long chave;             // Chave do item
     void* info;             // Carga de informação
 
+    struct sItem* ant;      // Ponteiro para o item anterior
     struct sItem* prox;     // Ponteiro para o próximmo item 
                             // (para o caso de as colisões serem tratadas com uma lista encadeada)
 };
@@ -149,27 +153,6 @@ void* retorna_stats(DicioSemiDinamico* dsd){
     return dsd->stats;
 }
 
-
-
-DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
-    double diferenca = dsd->stats->maior_colisao/(double)dsd->stats->f_carga;
-    if (diferenca > 1.2){
-    //if (dsd->stats->maior_colisao > dsd->stats->f_carga){
-        //printf("\nOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\ndeu ruim\n");
-        printf("\n[%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
-
-        // dsd->pos = realloc(dsd->pos, (dsd->tamanho * diferenca) * sizeof(Item*));
-        // dsd->tamanho *= diferenca;
-        // dsd->stats->v_colisoes = realloc(dsd->stats->v_colisoes, (dsd->tamanho * diferenca) * sizeof(long));
-        
-        // FAZER UM NOVO DICIO, REINSERIR OS DADOS
-        printf("\nnovo: [%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
-
-        return dsd;
-    }
-    return NULL;
-}
-
 // Cria um item com chave e informação
 Item* criar_item(long chave, void* info){
     Item* item = malloc(sizeof(Item));
@@ -214,71 +197,12 @@ DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam){
 }
 
 
-
-
-// Função que faz a inserção por encadeamento, no começo da lista, nos casos de colisão
-void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
-    Item* aux = dsd->pos[k], *aux2;
-
-    // Atualiza as estatísticas
-    dsd->stats->colisoes++;
-    //printf("%ld - %ld\n",k,dsd->stats->colisoes);
-    //printf("%ld:\t%ld vs ", k,  dsd->stats->v_colisoes[k]);
-    dsd->stats->v_colisoes[k]++;
-    //printf("%ld\n",  dsd->stats->v_colisoes[k]);
-
-    if (dsd->stats->v_colisoes[k] > dsd->stats->maior_colisao){
-        dsd->stats->maior_colisao = dsd->stats->v_colisoes[k];
-    }
-
-    /* // Inserção no final
-    while(aux){
-        printf("* ");
-        aux2 = aux;
-        aux = aux->prox;
-    }
-    aux2->prox = item;
-    */
-    
-    // Inserção no começo
-    item->prox = aux;
-    dsd->pos[k] = item;
-}
-
-
-// Função de inserção no dicionário 
-void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
-    
-    dsd->ocupacao++;
-    long k = hash(dsd->tamanho, info);
-    Item* item = criar_item(k, info);
-
-    printf("inserir: ([%ld] %s)\t", k, cast_string(info));
-
-    // Checa se a posição está vazia
-    if ((dsd->pos[k]->chave != k)){
-        dsd->pos[k] = item;
-        dsd->stats->v_colisoes[k] = 1;
-        dsd->pos[k]->prox = NULL;
-    }
-    // Lida com as colisões
-    else{
-        insecao_encadeamento(dsd, k, item);
-        rehashing(dsd);
-    }
-}
-
-
-// Função de comparação
-char compara(void* info1, void* info2){
-    return compara_string(info1, info2);
-}
-
-
 // Função de busca por um item em um dicionário
-Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
+Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info, char imprimir){
     long k = hash(dsd->tamanho, info);
-    printf("buscar: (chave = %ld)\t%s\n", k, cast_string(info));
+    if (imprimir){
+        printf("BUSCAR: (chave = %ld)\t%s\n", k, cast_string(info));
+    }
     long n = 0;
     Item* aux;
     
@@ -319,13 +243,184 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
 }
 
 
+void* remove_do_dicio_sd(DicioSemiDinamico* dsd, void* info){
+    Item* removido = buscar_no_dicio_sd(dsd,info, 0);
+    void* carga;
+    
+    if (removido){
+        carga = removido->info;
+        if (removido->ant){
+            removido->ant->prox = removido->prox;
+        }
+        else {
+            //long k = hash(dsd->tamanho, info);
+            dsd->pos[removido->chave] = removido->prox;
+        }
+
+        //printf("aqui?\n");
+    }
+    long k = hash(dsd->tamanho, info);
+    dsd->stats->v_colisoes[k]--;
+    free(removido);
+    return carga;
+}
+
+
+
+// Função que faz a inserção por encadeamento, no começo da lista, nos casos de colisão
+void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
+    Item* aux = dsd->pos[k], *aux2;
+
+    // Atualiza as estatísticas
+    dsd->stats->colisoes++;
+    //printf("%ld - %ld\n",k,dsd->stats->colisoes);
+    //printf("%ld:\t%ld vs ", k,  dsd->stats->v_colisoes[k]);
+    dsd->stats->v_colisoes[k]++;
+    //printf("%ld\n",  dsd->stats->v_colisoes[k]);
+
+    if (dsd->stats->v_colisoes[k] > dsd->stats->maior_colisao){
+        dsd->stats->maior_colisao = dsd->stats->v_colisoes[k];
+    }
+
+    /* // Inserção no final
+    while(aux){
+        printf("* ");
+        aux2 = aux;
+        aux = aux->prox;
+    }
+    aux2->prox = item;
+    */
+    
+    // Inserção no começo
+    item->prox = aux;
+    aux->ant = item;
+    dsd->pos[k] = item;
+}
+
+
+// Função de inserção no dicionário 
+DicioSemiDinamico* inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
+    //printf("aqui? %ld\n", dsd->ocupacao);
+    dsd->ocupacao++;
+    long k = hash(dsd->tamanho, info);
+    Item* item = criar_item(k, info);
+
+    //printf("inserir: ([%ld] %s)\t", k, cast_string(info));
+
+    // Checa se a posição está vazia
+    if ((dsd->pos[k]->chave != k)){
+        dsd->pos[k] = item;
+        dsd->stats->v_colisoes[k] = 1;
+        dsd->pos[k]->prox = NULL;
+        dsd->pos[k]->ant = NULL;
+    }
+    // Lida com as colisões
+    else{
+        insecao_encadeamento(dsd, k, item);
+        return NULL;
+        //return rehashing(dsd);
+    }
+}
+
+
+// Function to check if a number is prime
+bool is_prime(int n) {
+    if (n <= 1) return false;
+    for (int i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+// Function to find the closest greater prime number
+int closest_greater_prime(int n) {
+    int i = n + 1;
+    while (!is_prime(i)) {
+        // Keep incrementing the number until it is prime
+        i++;
+    }
+    return i;
+}
+
+
+DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
+
+    double diferenca = dsd->stats->maior_colisao/(double)dsd->stats->f_carga;
+
+    if (diferenca > 1.2){
+        printf("\n################################\nREDIMENSIONANDO\n");
+
+        Item* aux, *aux2;
+        long tamanho = closest_greater_prime(dsd->tamanho * diferenca), n = 0;
+        
+        // FAZER UM NOVO DICIO, REINSERIR OS DADOS
+        DicioSemiDinamico* new_dsd = criar_dicio_sd(dsd->stats->f_carga, tamanho);
+
+        new_dsd->ocupacao = 0;
+        new_dsd->tamanho = tamanho;
+
+        new_dsd->stats->buscas = dsd->stats->buscas;
+        new_dsd->stats->comparacoes = dsd->stats->comparacoes;
+        new_dsd->stats->f_carga = dsd->stats->f_carga;
+
+        for (long i = 0; i < dsd->tamanho; i++){
+
+            if ((dsd->stats->v_colisoes[i]) && (dsd->pos[i])){
+                
+                long k = hash(dsd->tamanho, dsd->pos[i]->info);
+                //printf("[%ld %ld] ", k, dsd->pos[i]->chave);
+                if (k == dsd->pos[i]->chave){
+                    aux = dsd->pos[i];
+                    n = 0;
+                    while (aux){
+                        //printf("[pos %ld - %s] ", n, cast_string(aux->info));
+                        //printf("%p\n", aux->prox);
+                        aux2 = aux->prox;
+                        inserir_no_dicio_sd(new_dsd, aux->info);
+                        remove_do_dicio_sd(dsd, aux->info);
+                        aux = aux2;
+                        n++;
+                    }
+                    
+                }
+            }
+        }
+        printf("\n[%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
+        printf("\nnovo: [%ld] %ld <= %ld (%f)\n", new_dsd->tamanho,new_dsd->stats->f_carga, new_dsd->stats->maior_colisao, diferenca);
+        
+        printf("\n###################### NOVO DICIO:\n");
+        //imprime_dicio_sd_encadeado(new_dsd);
+        imprime_stats(new_dsd, 1);
+
+        //printf("\n###################### DICIO ANTIGO:\n");
+        //imprime_dicio_sd_encadeado(dsd);
+        //printf("\n%ld\n", dsd->stats->v_colisoes[171]);
+        //imprime_stats(dsd, 1);
+        //printf("aqui?\n");
+
+        //free(dsd->stats->v_colisoes);
+        free(dsd->stats);
+        free(dsd);
+        dsd = new_dsd;
+        
+        return new_dsd;
+    }
+    return NULL;
+    //return dsd;
+}
+
+// Função de comparação
+char compara(void* info1, void* info2){
+    return compara_string(info1, info2);
+}
+
 
 void teste_de_busca(DicioSemiDinamico* dsd, char* pal){
     
     printf("####################################\n");
     printf("BUSCANDO POR \"%s\"\n", pal);
 
-    imprime_item(buscar_no_dicio_sd(dsd, pal));
+    imprime_item(buscar_no_dicio_sd(dsd, pal, 1));
     
     printf("DADOS DEPOIS DA BUSCA: \n");
     imprime_stats(dsd, 1);

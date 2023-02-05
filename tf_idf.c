@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
-#include "dicio_semi_dinamico.h"
+//#include "dicio_semi_dinamico.h"
 //#include "tf_idf.h"
 
 // Tipo contendo o dicionário de palavras, com suas ocorrências e páginas
