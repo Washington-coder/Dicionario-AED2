@@ -2,8 +2,6 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
-#include "dicio_semi_dinamico.h"
-
 // Tipo contendo o dicionário de palavras, com suas ocorrências e páginas
 typedef struct sLivro{
     DicioSemiDinamico* frequencia_livro; // uh oh (pointer?)
