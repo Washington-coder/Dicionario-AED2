@@ -382,7 +382,10 @@ int main()
 
     // MANDAR ISSO PRO TF_IDF
     double num_tf = tf("universidade", lido->ps[0], lista_dsd[0]);
-    printf("%f\n", num_tf);
+    printf("TF: %f\n", num_tf);
+
+    long int num_con = n_containing("universidade", lido);
+    printf("n_containing: %d\n", num_con); 
 
     // Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
     // TPalavra* p = retorna_info(item);
