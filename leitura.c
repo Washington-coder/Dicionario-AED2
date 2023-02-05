@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "tf_idf.h"
 
 typedef struct listaPa{
     long num_lista;
