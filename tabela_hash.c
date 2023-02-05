@@ -263,6 +263,7 @@ char compara(void* info1, void* info2){
 // Função de busca por um item em um dicionário
 Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     long k = hash(dsd->tamanho, info);
+    printf("buscar: %ld\t%s\n", k, cast_string(info));
     long n = 0;
     Item* aux;
     
@@ -271,24 +272,28 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     for (long i = 0; i < dsd->stats->v_colisoes[k]+1; i++){
         
         if (dsd->pos[k]){
-
-            if (!compara(dsd->pos[k]->info, info)){
-                dsd->stats->comparacoes++;
-
-                return dsd->pos[k];
-            }
-
-            else if (dsd->pos[k]->info){
-                aux = dsd->pos[k];
-
-                while ((aux) && (compara(aux->info,info))){
+            //printf("aqui? %p\n", dsd->pos[k]->info);
+            if (dsd->pos[k]->info){
+                if (!compara(dsd->pos[k]->info, info)){
                     dsd->stats->comparacoes++;
-                    aux = aux->prox;
+
+                    return dsd->pos[k];
                 }
 
-                if (aux){
-                    return aux;
+                else if (dsd->pos[k]->info){
+                    
+                    aux = dsd->pos[k];
+
+                    while ((aux) && (compara(aux->info,info))){
+                        dsd->stats->comparacoes++;
+                        aux = aux->prox;
+                    }
+
+                    if (aux){
+                        return aux;
+                    }
                 }
+
             }
             n = 0;
 

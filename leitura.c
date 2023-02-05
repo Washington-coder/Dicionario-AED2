@@ -344,6 +344,23 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
 }
 
 
+DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
+    DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag);
+
+    for (int i = 0; i < lido->num_pag; i++){
+        printf("#################### PÁGINA %d\n\n", i);
+        DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
+        //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
+        imprime_dicio_sd_encadeado(dsd);
+        imprime_stats(dsd, 1);
+        lista_dsd[i] = dsd;
+        //printf("\n");
+    }
+    return lista_dsd;
+}
+
+
+
 // Abre o arquivo do livro, e chamar as funções pra ler
 int main()
 {
@@ -357,28 +374,16 @@ int main()
     // Ler livro
     TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
-    imprime_livro(lido);
+    //imprime_livro(lido);
 
     // DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0);
     // imprime_dicio_sd_encadeado(dsd);
     // //printf("aaa");
     // imprime_stats(dsd, 1);
 
-    // DicioSemiDinamico* dsd = criar_dicio_sd(5, 5);
-    // inserir_no_dicio_sd(dsd, "abc");
-    // printf("%ld\n", hash(5, "zeki"));
-    // //imprime_dicio_sd_encadeado(dsd);
-    // imprime_stats(dsd, 0);
+    DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
 
-    for (int i = 0; i < lido->num_pag; i++){
-        printf("#################### PÁGINA %d\n\n", i);
-        DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
-        //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
-        imprime_dicio_sd_encadeado(dsd);
-        imprime_stats(dsd, 1);
-        //printf("\n");
-    }
-    
+    imprime_item(buscar_no_dicio_sd(lista_dsd[292], "cher"));
 
 }
 
