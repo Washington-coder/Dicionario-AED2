@@ -6,11 +6,13 @@
 
 
 ## **1.Objetivos**
+
 Os dicionários são um tipo de estrutura de dados muito importantes e úteis na área da computação, visto isso o objetivo do trabalho é resolver um problema utilizando essa estrutura. O índice remissivo é uma lista de palavras importantes de texto anexado junto com as páginas em que elas ocorrem, ele serve para criar uma relação de termos importantes para o texto em geral. Mas é perceptivel que seria muito custoso uma pessoa verificar quais palavras são importantes de serem citadas, onde elas aparecem e em quais páginas, e esta é a dificuldade que foi proposta resolver utilizando a ideia de dicionários, afim de otimizar esse trabalho, o programa deverá ser capaz de ler um arquivo de texto e retorna outro arquivo com o índice remissivo.
 
 
 
 ## **2.Dicionários**
+
 Os dicionário são um tipo abstrato de dados orientados a conteúdo, e considerando que se tratam do tema principal de estudo do trabalho, é importante salientar pontos importantes deles.
 Existem três tipos de dicionários: Estático, Semi-Dinâmico e Dinâmico.
 
@@ -35,21 +37,31 @@ A **função de Hashing** tem influência direta na eficiência das operações 
 
 
 
-## **3.Metódologia**
+## **3.Metodologia**
+
 ### **3.1 Planejamento**
-A construção do código foi dividida em partes, a primeira parte se trata do pré-processamento do texto, primeiro ele executará a função de stop words que lerá o arquivo das stop words, e os colocará em um vetor, depois disso a função de ler o livro será ativado ele lerá o arquivo de texto que deverá ser tratado, ao ler esse arquivo o código colocará as palavras de uma página em um tipo pagina dentro do tipo livro, porém excluindo as stop words, então por fim acaba a parte de pré-processamento quando a função retorna o tipo livro completo.
-Depois da parte de pré-processamento, começa a parte de processamento em si, no caso o código lerá o tipo livro do pré-processsamento, e colocará as palavras no diconario, alocado junto com as repetições e as páginas em que ocorrem, a partir disso será calculado o TF-IDF.
+
+A construção do código foi dividida em partes.
+
+**Pré-processamento:** onde é executada a função `carregaStopwords(.)`, que faz a leitura o arquivo das stop words e retorna um vetor das suas palavras. Depois disso, a função `lerPagina(arquivo, stopwords, num_pagina)` é ativada e faz a leitura do arquivo de texto que deverá ser tratado. Ao ler esse arquivo, o código insere as palavras de uma página -- excluindo as stopwords -- em uma `struct TPagina`, contendo o vetor de palavras, sua quantidade, e o número da respectiva página. Essa função é chamada repetidamente pela função `lerLivro(arquivo, stopwords)`, que guarda seus resultados dentro de uma `struct TLivro`, contendo um vetor de `TPagina`s e a quantidade de páginas. Uma vez que se chegue ao fim do livro, a função retorna o TLivro completo.
+
+**Dicionário Semi-Dinâmico:** depois da parte de pré-processamento, começa a parte de processamento em si, onde o código lerá o tipo livro do pré-processsamento, e colocará as palavras no diconario, alocado junto com as repetições e as páginas em que ocorrem, a partir disso será calculado o TF-IDF.
+
 
 ### **3.2 Configuração geral**
+
 aqui a gente vai mostrar e falar o que a gente fez nos códigos e os códigos, detalhar bem os códigos
 
 ### **3.3 Configurações Experimentais**
+
 aqui a gente vai falar como fizemos os experimentos, usar figuras esquematicas de como as coisas se interligam
 
 ### **3.4 Resultados e interpretações**
+
 essa parte  é importante, talvez a mais importante, eu não entendi como fazer isso:
 ![image](https://user-images.githubusercontent.com/107904641/216778332-55d1cc53-6011-4b32-8b16-26b95eaa2dbe.png)
 ![image](https://user-images.githubusercontent.com/107904641/216778654-00af5076-81c4-4d3d-9274-39894d759100.png)
 
 ## **4.Discussões**
+
 discutir os resultados em geral dos experimentos e dizer qual foi o melhor jeito de usar
