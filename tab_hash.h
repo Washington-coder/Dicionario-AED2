@@ -1,4 +1,9 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+
 typedef struct sDicioSemiDinamico DicioSemiDinamico;
+typedef struct sItem Item;
 
 // Cria o dicionário
 DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam);

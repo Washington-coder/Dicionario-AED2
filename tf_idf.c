@@ -11,25 +11,23 @@ typedef struct sLivro{
 } FrequenciaLivro;
 
 
-// retorna a frequência do termo em um documento
-long tf(char* palavra, FrequenciaLivro* pagina){
+// retorna a frequência do termo em uma página (tpalavra, tpagina)
+long tf(TPalavra* palavra, TPagina* pagina){
 
 }
 
-// retorna a quantidade de documentos que contém um termo
-// necessário?
-long n_containing(char* palavra, FrequenciaLivro** livro){
+// retorna a quantidade de páginas que contém um termo (tpalavra, tlivro)
+long n_containing(TPalavra* palavra, TLivro* livro){
 
 }
 
-// retorna o quão comum é uma palavra em uma série de documentos
-// necessário?
-long idf(char* palavra, FrequenciaLivro** livro){
+// retorna o quão comum é uma palavra em uma série de páginas (tpalavra, tlivro)
+long idf(TPalavra* palavra, TLivro* livro){
 
 }
 
-// retorna o TF-IDF
-// necessário?
-long tfidf(char* palavra, FrequenciaLivro* pagina, FrequenciaLivro** livro){
+// retorna o TF-IDF (com dicionário)
+long tfidf(TPalavra* palavra, TPagina* pagina, TLivro* livro){
+    
     return tf(palavra, pagina) * idf(palavra, livro);
 }

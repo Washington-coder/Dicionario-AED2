@@ -1,10 +1,12 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+//#include "leitura_pag.h"
 #include "tab_hash.h"
 
 typedef struct sEstatistica {
     long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
+    long maior_colisao;     // Guarda a maior quantidade de colisões no vetor de colisões
     long buscas;            // Número total de buscas
     long comparacoes;       // Número total de comparações
     long f_carga;           // Fator de carga, determina a quantidade média ideal de colisões
@@ -12,13 +14,13 @@ typedef struct sEstatistica {
 } Estatistica;
 
 
-typedef struct sItem {
+struct sItem {
     long chave;             // Chave do item
     void* info;             // Carga de informação
 
     struct sItem* prox;     // Ponteiro para o próximmo item 
                             // (para o caso de as colisões serem tratadas com uma lista encadeada)
-} Item;
+};
 
 
 struct sDicioSemiDinamico {
@@ -104,7 +106,7 @@ void imprime_stats(DicioSemiDinamico* dsd){
     
     printf("DADOS ESTATÍSTICOS DO DICIONÁRIO:\n");
 
-    printf("Fator de Carga: %ld\n\tColisões: %ld", dsd->stats->f_carga, dsd->stats->colisoes);
+    printf("Fator de Carga: %ld\n\tColisões: %ld\tMaior Colisão: %ld", dsd->stats->f_carga, dsd->stats->colisoes,  dsd->stats->maior_colisao);
     printf("\tBuscas: %ld\tComparações: %ld\n", dsd->stats->buscas, dsd->stats->comparacoes);
     printf("Colisões por posição:\n");
 
@@ -122,6 +124,7 @@ long hash(long tamanho, void* info){
     //printf("%s\n", cast_string(info));
     
     return proto_hash(tamanho, info);
+    //return 0;
 }
 
 // Cria o dicionário
@@ -136,6 +139,7 @@ DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam){
 
     dsd->stats->buscas = 0;
     dsd->stats->colisoes = 0;
+    dsd->stats->maior_colisao = 0;
     dsd->stats->comparacoes = 0;
     dsd->stats->f_carga = f_carga;
 
@@ -164,6 +168,10 @@ void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
     dsd->stats->colisoes++;
     dsd->stats->v_colisoes[k]++;
 
+    if (dsd->stats->v_colisoes[k] > dsd->stats->maior_colisao){
+        dsd->stats->maior_colisao = dsd->stats->v_colisoes[k];
+    }
+
     /* // Inserção no final
     while(aux){
         printf("* ");
@@ -184,7 +192,7 @@ void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
 // Função de inserção no dicionário 
 void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     //printf("vai inserir %s\n", cast_string(info));
-
+    dsd->ocupacao++;
     long k = hash(dsd->tamanho, info);
 
     Item* item = criar_item(k, info);
@@ -250,7 +258,7 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
 void teste_de_busca(DicioSemiDinamico* dsd, char* pal){
     //char pal[48] = pal;
     printf("####################################\n");
-    printf("BUSCANDO POR \"%s\"", pal);
+    printf("BUSCANDO POR \"%s\"\n", pal);
 
     imprime_item(buscar_no_dicio_sd(dsd, pal));
     
@@ -259,6 +267,7 @@ void teste_de_busca(DicioSemiDinamico* dsd, char* pal){
     printf("####################################\n");
 }
 
+/*
 int main(){
     DicioSemiDinamico* dsd = criar_dicio_sd(3, 101);
     //printf("%ld\n", dsd->stats->f_carga);
@@ -287,3 +296,4 @@ int main(){
     teste_de_busca(dsd, "paz");
     teste_de_busca(dsd, "dor");
 }
+*/

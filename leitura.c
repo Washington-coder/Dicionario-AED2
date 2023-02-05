@@ -3,6 +3,8 @@
 #include "string.h"
 #include "leitura_pag.h"
 #include "tab_hash.h"
+#include <math.h>
+#include <stdbool.h>
 #include <ctype.h>
 
 
@@ -94,16 +96,17 @@ TPalavra *criaListaPalavras(TPagina *pagina)
                 }
             }
         }
-        imprime_lista_palavras(lista_de_palavras, qtd_de_palavras);
+        //imprime_lista_palavras(lista_de_palavras, qtd_de_palavras);
+        return lista_de_palavras;
     }
 }
 
 // Struct tipo livro, que contém um vetor de tipos-página, e o número de páginas que possui
-typedef struct slivro
+struct slivro
 {
     TPagina *ps[1000];// TODO - tornar dinâmico, usando a quantidade de páginas do livro
     int num_pag;
-} TLivro;
+};
 
 // imprime uma página
 void printPag(TPagina *pagina)
@@ -278,6 +281,36 @@ char **carregarStopwords()
     return stopwords;
 }
 
+// Function to check if a number is prime
+bool is_prime(int n) {
+    if (n <= 1) return false;
+    for (int i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+// Function to find the closest greater prime number
+int closest_greater_prime(int n) {
+    int i = n + 1;
+    while (!is_prime(i)) {
+        // Keep incrementing the number until it is prime
+        i++;
+    }
+    return i;
+}
+
+void Ainsere_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
+    
+    printf("PÁGINA\n");
+    for (int i = 0; i < qtd_de_palavras; i++)
+    {
+        printf("palavra[%d]: %s\t", i, lista_de_palavras[i].nome);
+        printf("repete: %d vezes\n", lista_de_palavras[i].qtd_repeticoes);
+    }
+    printf("\n");
+}
+
 
 // Abre o arquivo do livro, e chamar as funções pra ler
 int main()
@@ -293,6 +326,43 @@ int main()
     TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
     imprime_livro(lido);
+
+    //imprime_lista_palavras(lido->ps[0]->listaPalavras, lido->ps[0]->num_pal);
+
+    long tam = lido->ps[0]->num_pal;
+
+    DicioSemiDinamico* dsd = criar_dicio_sd(5, closest_greater_prime(tam));
+
+    // char* palavra = malloc(sizeof(char*) * strlen(lido->ps[1]->listaPalavras[5].nome));
+    
+    // //imprime_lista_palavras(lido->ps[1]->listaPalavras, 10);
+    // //printf("aqui?\n");
+    // strcpy(palavra, lido->ps[1]->listaPalavras[5].nome);
+    // printf("%s\n", palavra);
+
+
+    //char a[5][10] = {"aaa", "bbb", "ccc", "ddd", "eeee"};
+    //inserir_no_dicio_sd(dsd, a[2]);
+
+    // //palavra = lido->ps[0]->listaPalavras;
+    // printf("%d\n", lido->ps[0]->listaPalavras[0].qtd_de_palavras);//->listaPalavras[0]);
+    
+    for (int i = 0; i < tam; i++){
+        
+        //TPalavra* palavra = ;
+        printf("%d\n", i);
+        TPalavra* palavra;// = malloc(sizeof(lido->ps[0]->listaPalavras[i]));
+        
+        printf("aqui? %d\n",lido->ps[0]->listaPalavras[i].qtd_de_palavras);
+        inserir_no_dicio_sd(dsd, palavra);
+        //free(palavra);
+    }
+
+    imprime_dicio_sd_encadeado(dsd);
+    imprime_stats(dsd);
+
+    
+
 }
 
 // chcp 65001
