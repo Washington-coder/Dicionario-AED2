@@ -48,7 +48,7 @@ A construção do código foi dividida em partes.
 **Dicionário Semi-Dinâmico:** depois da parte de pré-processamento, começa a parte de processamento em si, onde o código lerá o tipo livro do pré-processsamento, e colocará as palavras no diconario, alocado junto com as repetições e as páginas em que ocorrem, a partir disso será calculado o TF-IDF.
 
 
-### **3.2 Configuração geral**
+### **3.2 Descrição do código**
 
 aqui a gente vai mostrar e falar o que a gente fez nos códigos e os códigos, detalhar bem os códigos
 
