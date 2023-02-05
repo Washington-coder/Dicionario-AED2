@@ -332,7 +332,7 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
     // printf("%ld\n", tam);
 
     for (int i = 0; i < tam; i++){
-        
+        //printf("i: %d\n", i);
         TPalavra* palavra = &lido->ps[k]->listaPalavras->lista[i];
         //printf("(%s %ld c%d) ", palavra->nome, hash(primo_tam, palavra->nome), palavra->qtd_repeticoes);
         // printf("\t%ld", hash(primo_tam, palavra));
@@ -359,19 +359,22 @@ int main()
 
     imprime_livro(lido);
 
-    // DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 269);
+    // DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0);
     // imprime_dicio_sd_encadeado(dsd);
+    // //printf("aaa");
+    // imprime_stats(dsd, 1);
 
     // DicioSemiDinamico* dsd = criar_dicio_sd(5, 5);
     // inserir_no_dicio_sd(dsd, "abc");
     // printf("%ld\n", hash(5, "zeki"));
     // //imprime_dicio_sd_encadeado(dsd);
     // imprime_stats(dsd, 0);
+
     for (int i = 0; i < lido->num_pag; i++){
         printf("#################### PÁGINA %d\n\n", i);
         DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
         //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
-        //imprime_dicio_sd_encadeado(dsd);
+        imprime_dicio_sd_encadeado(dsd);
         imprime_stats(dsd, 1);
         //printf("\n");
     }

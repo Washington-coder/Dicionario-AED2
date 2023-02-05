@@ -67,24 +67,31 @@ void imprime_item(Item* item){
 // ESPECIALISTA: Imprime os conteúdos do dicionário, caso a informação seja uma string
 void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd){
     Item** item = dsd->pos, *aux;
-    long n = 0;
+    long n = 0, k = 0;
 
     printf("CONTEÚDOS DO DICIONÁRIO:\n");
     for (long i = 0; i < dsd->tamanho; i++){
+        
 
-        if ((item[i]) && (strcmp(cast_string(item[i]->info), " "))){
+        if ((dsd->stats->v_colisoes[i]) && (item[i])){
             //printf("%s ", );
+            k = hash(dsd->tamanho, item[i]->info);
+            if (k == item[i]->chave){
+                printf("índice [%ld]:\t", i);
+                aux = item[i];
+                n = 0;
+                //printf("k: %ld\tas: %s %ld\n",k,cast_string(aux->info), aux->chave);
 
-            printf("índice [%ld]\n", i);
-            aux = item[i];
-            n = 0;
+                while (aux){
+                    printf("[pos %ld - %s] ", n, cast_string(aux->info));
+                    //printf("%p\n", aux->prox);
+                    aux = aux->prox;
+                    n++;
+                }
+                printf("\n");
 
-            while (aux){
-                printf("[pos %ld - %s] ", n, cast_string(aux->info));
-                aux = aux->prox;
-                n++;
             }
-            printf("\n");
+            //printf("%ld\n", k);
         }
     }
     printf("\n");
@@ -93,6 +100,7 @@ void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd){
 
 // ESPECIALISTA: Compara duas infos, quando ambas forem strings
 char compara_string(void* info1, void* info2){
+    //printf("strings: %s vs %s", cast_string(info1), cast_string(info2));
     return strcmp(cast_string(info1), cast_string(info2));
 }
 
@@ -129,27 +137,11 @@ long hash(long tamanho, void* info){
     //return 0;
 }
 
-// Cria o dicionário
-DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam){
-    
-    DicioSemiDinamico* dsd = malloc(sizeof(DicioSemiDinamico));
+void init_vetor(DicioSemiDinamico* dsd){
 
-    dsd->stats = malloc(sizeof(Estatistica));
-    dsd->stats->v_colisoes = (long*) malloc(sizeof(long) * tam);
-
-    //printf("b, c, cmp ok\n");       // <=== MVP dos dicionários
-
-    dsd->stats->buscas = 0;
-    dsd->stats->colisoes = 0;
-    dsd->stats->maior_colisao = 0;
-    dsd->stats->comparacoes = 0;
-    dsd->stats->f_carga = f_carga;
-
-    dsd->tamanho = tam;
-    dsd->ocupacao = 0;
-    dsd->pos = malloc(sizeof(Item*) * tam);
-
-    return dsd;
+    for (long i = 0; i < dsd->tamanho; i++){
+        dsd->stats->v_colisoes[i] = 0;
+    }
 }
 
 
@@ -161,6 +153,43 @@ Item* criar_item(long chave, void* info){
     return item;
 }
 
+// Cria o dicionário
+DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam){
+    
+    DicioSemiDinamico* dsd = malloc(sizeof(DicioSemiDinamico));
+
+    dsd->stats = malloc(sizeof(Estatistica));
+    dsd->stats->v_colisoes = (long*) malloc(sizeof(long) * tam);
+    //init_vetor(dsd);
+    memset(dsd->stats->v_colisoes, 0, tam*sizeof(long));
+    //printf("O PRIMEIRO: %ld", dsd->stats->v_colisoes[69]);
+
+    //printf("b, c, cmp ok\n");       // <=== MVP dos dicionários
+
+    dsd->stats->buscas = 0;
+    dsd->stats->colisoes = 0;
+    dsd->stats->maior_colisao = 0;
+    dsd->stats->comparacoes = 0;
+    dsd->stats->f_carga = f_carga;
+
+    dsd->tamanho = tam;
+    dsd->ocupacao = 0;
+    //Item* poss[tam] = {NULL,};
+    dsd->pos = malloc(sizeof(Item*) * tam);
+    for (long i = 0; i < tam; i++){
+        //dsd->pos[i]->chave = -1;(int) dsd->pos[i]->chave;
+        //memset(dsd->pos[i]->chave, -1, sizeof(int));
+        dsd->pos[i] = criar_item(-1, NULL);
+    }
+    //dsd->pos = {NULL, };
+    //memset(dsd->pos, NULL, tam);
+
+
+    return dsd;
+}
+
+
+
 
 // Função que faz a inserção por encadeamento, no começo da lista, nos casos de colisão
 void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
@@ -168,7 +197,10 @@ void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
 
     // Atualiza as estatísticas
     dsd->stats->colisoes++;
+    //printf("%ld - %ld\n",k,dsd->stats->colisoes);
+    //printf("%ld:\t%ld vs ", k,  dsd->stats->v_colisoes[k]);
     dsd->stats->v_colisoes[k]++;
+    //printf("%ld\n",  dsd->stats->v_colisoes[k]);
 
     if (dsd->stats->v_colisoes[k] > dsd->stats->maior_colisao){
         dsd->stats->maior_colisao = dsd->stats->v_colisoes[k];
@@ -194,19 +226,31 @@ void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     
     dsd->ocupacao++;
     long k = hash(dsd->tamanho, info);
-
+    //printf("inserindo: %s = %ld\n", cast_string(info),k );
     Item* item = criar_item(k, info);
     
+    //printf("vetor antes: %ld\n", dsd->stats->v_colisoes[k]);
     // Checa se a posição está vazia
-    if (!dsd->pos[k]){
+    if ((dsd->pos[k]->chave != k)){// && (!dsd->stats->v_colisoes[k])){
+        //printf("aqui?\n");
         dsd->pos[k] = item;
-        dsd->stats->v_colisoes[k] = 0;
-        
+        dsd->stats->v_colisoes[k] = 1;
+        dsd->pos[k]->prox = NULL;
+        //printf("inseriu, next: \n");
     }
     // Lida com as colisões
-    else {
+    // else if ((dsd->pos[k]->chave != k) || (dsd->stats->v_colisoes[k] > dsd->tamanho)){
+    //     printf("k: %ld %s\n",k , cast_string(item->info));
+    //     dsd->pos[k]->chave = k;
+    //     dsd->stats->v_colisoes[k] = 0;
+    // }
+    else{
         insecao_encadeamento(dsd, k, item);
+        // printf("info %p\n", dsd->pos[k]->info);
+        // printf("vetor: %ld\n", dsd->stats->v_colisoes[k]);
+        // printf("colisão:\tpos: %ld - %s\n",k , cast_string(item->info));
     }
+    //printf("\n");
 }
 
 
