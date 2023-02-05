@@ -324,6 +324,7 @@ void Ainsere_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavr
 
 
 DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
+
     long tam = lido->ps[k]->listaPalavras->num_lista;
     long primo_tam = closest_greater_prime(tam);
 
@@ -333,7 +334,7 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
     for (int i = 0; i < tam; i++){
         
         TPalavra* palavra = &lido->ps[k]->listaPalavras->lista[i];
-        // printf("%s", palavra->nome);
+        //printf("(%s %ld c%d) ", palavra->nome, hash(primo_tam, palavra->nome), palavra->qtd_repeticoes);
         // printf("\t%ld", hash(primo_tam, palavra));
         // printf("\t%d\n", palavra->qtd_repeticoes);
 
@@ -347,7 +348,7 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
 int main()
 {
     FILE *fl;
-    char *livro = "teste.base";
+    char *livro = "Paralelismo.base";
     fl = fopen(livro, "r");
 
     // Ler e criar um vetor de stop words
@@ -358,11 +359,24 @@ int main()
 
     imprime_livro(lido);
 
-    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0);
+    // DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 269);
+    // imprime_dicio_sd_encadeado(dsd);
 
-    imprime_dicio_sd_encadeado(dsd);
-    //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
-    imprime_stats(dsd);
+    // DicioSemiDinamico* dsd = criar_dicio_sd(5, 5);
+    // inserir_no_dicio_sd(dsd, "abc");
+    // printf("%ld\n", hash(5, "zeki"));
+    // //imprime_dicio_sd_encadeado(dsd);
+    // imprime_stats(dsd, 0);
+    for (int i = 0; i < lido->num_pag; i++){
+        printf("#################### PÁGINA %d\n\n", i);
+        DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
+        //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
+        //imprime_dicio_sd_encadeado(dsd);
+        imprime_stats(dsd, 1);
+        //printf("\n");
+    }
+    
+
 }
 
 // chcp 65001

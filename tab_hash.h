@@ -36,4 +36,4 @@ void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd);
 char compara_string(void* info1, void* info2);
 
 // Imprime os dados estatísticos do dicionário
-void imprime_stats(DicioSemiDinamico* dsd);
+void imprime_stats(DicioSemiDinamico* dsd, char vetor);

@@ -1,7 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-//#include "leitura_pag.h"
 #include "tab_hash.h"
 
 typedef struct sEstatistica {
@@ -50,10 +49,9 @@ long proto_hash(long tamanho, void* info){
     for (int i = 0; i < strlen(palavra); i++){
         peso *= 1.5;
         k += palavra[i] * peso;
-        //printf("%ld\t%ld\n", peso, k);
     }
     k = abs(k % tamanho);
-    //printf("%ld\n", k);
+    
     return k;
 }
 
@@ -74,10 +72,10 @@ void imprime_dicio_sd_encadeado(DicioSemiDinamico* dsd){
     printf("CONTEÚDOS DO DICIONÁRIO:\n");
     for (long i = 0; i < dsd->tamanho; i++){
 
-        if (item[i]){
+        if ((item[i]) && (strcmp(cast_string(item[i]->info), " "))){
+            //printf("%s ", );
 
             printf("índice [%ld]\n", i);
-
             aux = item[i];
             n = 0;
 
@@ -102,17 +100,22 @@ char compara_string(void* info1, void* info2){
 // FUNÇÕES GERAIS ========================================================================================================
 
 // Imprime os dados estatísticos do dicionário
-void imprime_stats(DicioSemiDinamico* dsd){
+void imprime_stats(DicioSemiDinamico* dsd, char vetor){
     
     printf("DADOS ESTATÍSTICOS DO DICIONÁRIO:\n");
+    //printf("%s \n", cast_string(dsd->pos[0]->info));
 
     printf("Fator de Carga: %ld\n\tColisões: %ld\tMaior Colisão: %ld", dsd->stats->f_carga, dsd->stats->colisoes,  dsd->stats->maior_colisao);
     printf("\tBuscas: %ld\tComparações: %ld\n", dsd->stats->buscas, dsd->stats->comparacoes);
-    printf("Colisões por posição:\n");
+    printf("\tCapacidade: %ld\tOcupação: %ld\n", dsd->tamanho, dsd->ocupacao);
 
-    for (long i = 0; i < dsd->tamanho; i++){
-        if (dsd->stats->v_colisoes[i]){
-            printf("[pos %ld - %ld]\t", i, dsd->stats->v_colisoes[i]);
+    if (vetor){
+        printf("Colisões por posição:\n");
+
+        for (long i = 0; i < dsd->tamanho; i++){
+            if (dsd->stats->v_colisoes[i]){
+                printf("[pos %ld - %ld]\t", i, dsd->stats->v_colisoes[i]);
+            }
         }
     }
     printf("\n");
@@ -121,7 +124,6 @@ void imprime_stats(DicioSemiDinamico* dsd){
 
 // Função hash - apelido para a real função hash, que pode ser uma diferente no futuro
 long hash(long tamanho, void* info){
-    //printf("%s\n", cast_string(info));
     
     return proto_hash(tamanho, info);
     //return 0;
@@ -184,14 +186,12 @@ void insecao_encadeamento(DicioSemiDinamico* dsd, long k, Item* item){
     // Inserção no começo
     item->prox = aux;
     dsd->pos[k] = item;
-
-    //printf("%p\t%s\n",dsd->pos[k]->prox, cast_string(dsd->pos[k]->info));
 }
 
 
 // Função de inserção no dicionário 
 void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
-    //printf("vai inserir %s\n", cast_string(info));
+    
     dsd->ocupacao++;
     long k = hash(dsd->tamanho, info);
 
@@ -200,6 +200,7 @@ void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     // Checa se a posição está vazia
     if (!dsd->pos[k]){
         dsd->pos[k] = item;
+        dsd->stats->v_colisoes[k] = 0;
         
     }
     // Lida com as colisões
@@ -224,11 +225,12 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     dsd->stats->buscas++;
 
     for (long i = 0; i < dsd->stats->v_colisoes[k]+1; i++){
-        //printf("%ld aqui?\n", k);
+        
         if (dsd->pos[k]){
+
             if (!compara(dsd->pos[k]->info, info)){
                 dsd->stats->comparacoes++;
-                //printf("Encontrou %s, indice %ld pos %ld\n", cast_string(dsd->pos[k]->info), k, n);
+
                 return dsd->pos[k];
             }
 
@@ -241,7 +243,6 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
                 }
 
                 if (aux){
-                    //printf("Encontrou %s, indice %ld pos %ld\n", cast_string(aux->info), k, n);
                     return aux;
                 }
             }
@@ -249,21 +250,25 @@ Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
 
         }
     }
-    //printf("%s? Não encontrado\n", cast_string(info));
-
+    
     return NULL;
 }
 
 
+DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
+
+}
+
+
 void teste_de_busca(DicioSemiDinamico* dsd, char* pal){
-    //char pal[48] = pal;
+    
     printf("####################################\n");
     printf("BUSCANDO POR \"%s\"\n", pal);
 
     imprime_item(buscar_no_dicio_sd(dsd, pal));
     
     printf("DADOS DEPOIS DA BUSCA: \n");
-    imprime_stats(dsd);
+    imprime_stats(dsd, 1);
     printf("####################################\n");
 }
 
