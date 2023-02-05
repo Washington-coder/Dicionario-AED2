@@ -20,6 +20,8 @@ long hash(long tamanho, void* info);
 // Função de comparação
 char compara(void* info1, void* info2);
 
+void* retorna_info(Item* item);
+
 // ESPECIALISTA: Recebe um dado em ponteiro void e retorna a string correspondente
 char* cast_string(void* info);
 

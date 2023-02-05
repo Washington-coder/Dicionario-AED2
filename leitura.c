@@ -348,8 +348,9 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
     DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag);
 
     for (int i = 0; i < lido->num_pag; i++){
-        printf("#################### PÁGINA %d\n\n", i);
+        printf("\n#################### PÁGINA %d\n", i);
         DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
+        printf("\n\n");
         //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
         imprime_dicio_sd_encadeado(dsd);
         imprime_stats(dsd, 1);
@@ -382,8 +383,11 @@ int main()
     // imprime_stats(dsd, 1);
 
     DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
-
-    imprime_item(buscar_no_dicio_sd(lista_dsd[292], "cher"));
+    printf("\n");
+    Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
+    TPalavra* p = retorna_info(item);
+    printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
+    //imprime_item();
 
 }
 

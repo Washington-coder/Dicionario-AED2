@@ -137,12 +137,10 @@ long hash(long tamanho, void* info){
     //return 0;
 }
 
-void init_vetor(DicioSemiDinamico* dsd){
-
-    for (long i = 0; i < dsd->tamanho; i++){
-        dsd->stats->v_colisoes[i] = 0;
-    }
+void* retorna_info(Item* item){
+    return item->info;
 }
+
 
 
 // Cria um item com chave e informação
@@ -226,31 +224,20 @@ void inserir_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     
     dsd->ocupacao++;
     long k = hash(dsd->tamanho, info);
-    //printf("inserindo: %s = %ld\n", cast_string(info),k );
     Item* item = criar_item(k, info);
-    
-    //printf("vetor antes: %ld\n", dsd->stats->v_colisoes[k]);
+
+    printf("inserir: ([%ld] %s)\t", k, cast_string(info));
+
     // Checa se a posição está vazia
-    if ((dsd->pos[k]->chave != k)){// && (!dsd->stats->v_colisoes[k])){
-        //printf("aqui?\n");
+    if ((dsd->pos[k]->chave != k)){
         dsd->pos[k] = item;
         dsd->stats->v_colisoes[k] = 1;
         dsd->pos[k]->prox = NULL;
-        //printf("inseriu, next: \n");
     }
     // Lida com as colisões
-    // else if ((dsd->pos[k]->chave != k) || (dsd->stats->v_colisoes[k] > dsd->tamanho)){
-    //     printf("k: %ld %s\n",k , cast_string(item->info));
-    //     dsd->pos[k]->chave = k;
-    //     dsd->stats->v_colisoes[k] = 0;
-    // }
     else{
         insecao_encadeamento(dsd, k, item);
-        // printf("info %p\n", dsd->pos[k]->info);
-        // printf("vetor: %ld\n", dsd->stats->v_colisoes[k]);
-        // printf("colisão:\tpos: %ld - %s\n",k , cast_string(item->info));
     }
-    //printf("\n");
 }
 
 
@@ -263,7 +250,7 @@ char compara(void* info1, void* info2){
 // Função de busca por um item em um dicionário
 Item* buscar_no_dicio_sd(DicioSemiDinamico* dsd, void* info){
     long k = hash(dsd->tamanho, info);
-    printf("buscar: %ld\t%s\n", k, cast_string(info));
+    printf("buscar: (chave = %ld)\t%s\n", k, cast_string(info));
     long n = 0;
     Item* aux;
     
