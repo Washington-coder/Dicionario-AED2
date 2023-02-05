@@ -5,7 +5,7 @@
 
 ## **1.Dicionários**
 Os dicionário são um tipo abstrato de dados orientados a conteúdo, e considerando que se tratam do tema principal de estudo do trabalho, é importante salientar pontos importantes deles.
-Existem três tipos de dicionários: Estático,  Semi-Dinâmico e Dinâmico.
+Existem três tipos de dicionários: Estático, Semi-Dinâmico e Dinâmico.
 
 **ESTÁTICOS:**  Uma vez construídos seus dados não mudam;  Suas buscas tem um custo ótimo, desde que seus elementos estejam ordenados. 
 O dicionário estático é implementado em um vetor.
@@ -13,6 +13,8 @@ O dicionário estático é implementado em um vetor.
 **SEMI-DINÂMICOS:** São construídos com uma certa margem para possíveis alterações, têm suporte para inserção e Busca, mas faz pouquíssimas  remoções, o que pode acabar sendo um problema.
 
 **DINÂMICOS:** São construídos com completa capacidade de alteração. Tem suporte para inserção, busca e remoção e são implementados com um ótimo custo. Árvores e Hashing com o endereçamento aberto.
+
+Durante o planejamento do trabalho foi decidido que usaremos um dicionário estático para guardar as stop words, afinal não será preciso alterar o dicionário uma vez que ele ja foi construído, apenas fazer a busca dentro dele. E também foi decidido a utilização de um dicionário semi-dinâmico afim de adicionar as possíveis palavras que serão colocadas no índisse remissivo, já que só precisaremos adicionar e não remover dentro desse dicionário.
 
 **FUNÇÃO DE HASH:** Algo em comum entre o dicionário semi-dinâmico e o dicionário dinâmico é que ambos possuem uma função de hashing, a função mapeia uma chave de busca para um índice do vetor. O seu ideal é que a função forneça índices únicos para o conjunto de chaves.
 A **função de Hashing** tem influência direta na eficiência das operações de Hash. Quanto melhor for o espelhamento, mais eficiente serão as operações.
