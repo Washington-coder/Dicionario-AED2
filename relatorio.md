@@ -3,7 +3,14 @@
 
 ***Resumo.*** *O trabalho se trata de alguma coisa bem interessante e chato de se usar, a não ser que voce use python*
 
-## **1.Dicionários**
+
+
+## **1.Objetivos**
+O índice remissivo é uma lista de palavras importantes que se repetem em um texto junto com as páginas em que elas ocorrem, elas servem para criar uma relação de termos importantes para o texto em geral. Mas é perceptivel que seria muito custoso uma pessoa verificar quais palavras são importantes de serem citadas, onde elas aparecem e em quais páginas, logo o objetivo principal do trabalho é usar a ideia de dicionários para criar um programa capaz de otimizar esse trabalho, o programa deverá ser capaz de ler um arquivo de texto e retorna outro arquivo com o índice remissivo, e dessa forma entender melhor como funciona a estrutura de dicionários.
+
+
+
+## **2.Dicionários**
 Os dicionário são um tipo abstrato de dados orientados a conteúdo, e considerando que se tratam do tema principal de estudo do trabalho, é importante salientar pontos importantes deles.
 Existem três tipos de dicionários: Estático, Semi-Dinâmico e Dinâmico.
 
@@ -25,11 +32,6 @@ A **função de Hashing** tem influência direta na eficiência das operações 
 **Encadeamento:** uma das formas de resolver colisões é construir uma lista linear para cada endereço da tabela, assim todas as chaves com o mesmo endereço são encadeadas em uma lista linear. É usual efetuar-se a inclusão de uma nova chave x no final da lista correspondente ao endereço h(x).
 
 **Endereçamento aberto:** As chaves que sofrem colisão são inseridas na própria tabela e sem o uso de listas encadeadas. Logo, o fator de carga não pode exceder o valor 1. O espaço gasto com encadeamento é economizado e a colisão é tratada com a busca de uma posição vazia na própria tabela para inserção. Quando uma chave k é endereçada para uma entrada da tabela que já esteja ocupada(colisão), uma sequência de localizações alternativas é escolhida. Mas se nenhuma das posições está vazia, então a tabela está cheia e não podemos inserir k. Existem várias propostas para a escolha de localizações alternativas. A mais simples é a prospecção linear: O índice é incrementado, encerra Prospecção se a posição está vazia.
-
-
-
-## **2.Objetivos**
-O índice remissivo é uma lista de palavras importantes que se repetem em um texto junto com as páginas em que elas ocorrem, elas servem para criar uma relação de termos importantes para o texto em geral. Mas é perceptivel que seria muito custoso uma pessoa verificar quais palavras são importantes de serem citadas, onde elas aparecem e em quais páginas, logo o objetivo principal do trabalho é usar a ideia de dicionários para criar um programa capaz de otimizar esse trabalho, o programa deverá ser capaz de ler um arquivo de texto e retorna outro arquivo com o índice remissivo, e dessa forma entender melhor como funciona a estrutura de dicionários.
 
 
 
