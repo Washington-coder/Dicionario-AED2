@@ -4,6 +4,7 @@
 
 typedef struct sDicioSemiDinamico DicioSemiDinamico;
 typedef struct sItem Item;
+typedef struct sEstatistica Estatistica;
 
 // Cria o dicionário
 DicioSemiDinamico* criar_dicio_sd(long f_carga, long tam);
@@ -21,6 +22,8 @@ long hash(long tamanho, void* info);
 char compara(void* info1, void* info2);
 
 void* retorna_info(Item* item);
+
+void* retorna_stats(DicioSemiDinamico* dsd);
 
 // ESPECIALISTA: Recebe um dado em ponteiro void e retorna a string correspondente
 char* cast_string(void* info);

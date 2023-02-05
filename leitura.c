@@ -35,6 +35,14 @@ struct slivro
     int num_pag;
 };
 
+typedef struct stats{
+    long buscas;            // Número total de buscas
+    long colisoes;          // Número total de colisões
+    long comparacoes;       // Número total de comparações
+    long f_carga;           // Fator de carga, determina a quantidade média ideal de colisões
+    long maior_colisao;     // Guarda a maior quantidade de colisões no vetor de colisões
+    long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
+} Stats;
 
 // 
 void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
@@ -311,17 +319,6 @@ int closest_greater_prime(int n) {
     return i;
 }
 
-void Ainsere_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
-    
-    printf("PÁGINA\n");
-    for (int i = 0; i < qtd_de_palavras; i++)
-    {
-        printf("palavra[%d]: %s\t", i, lista_de_palavras[i].nome);
-        printf("repete: %d vezes\n", lista_de_palavras[i].qtd_repeticoes);
-    }
-    printf("\n");
-}
-
 
 DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
 
@@ -334,9 +331,6 @@ DicioSemiDinamico* cria_dicio_lista_palavras(TLivro* lido, long k){
     for (int i = 0; i < tam; i++){
         //printf("i: %d\n", i);
         TPalavra* palavra = &lido->ps[k]->listaPalavras->lista[i];
-        //printf("(%s %ld c%d) ", palavra->nome, hash(primo_tam, palavra->nome), palavra->qtd_repeticoes);
-        // printf("\t%ld", hash(primo_tam, palavra));
-        // printf("\t%d\n", palavra->qtd_repeticoes);
 
         inserir_no_dicio_sd(dsd, palavra);
     }
@@ -351,11 +345,11 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
         printf("\n#################### PÁGINA %d\n", i);
         DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i);
         printf("\n\n");
-        //imprime_item(buscar_no_dicio_sd(dsd, "josé"));
-        imprime_dicio_sd_encadeado(dsd);
+        
+        //imprime_dicio_sd_encadeado(dsd);
         imprime_stats(dsd, 1);
         lista_dsd[i] = dsd;
-        //printf("\n");
+        
     }
     return lista_dsd;
 }
@@ -387,7 +381,9 @@ int main()
     Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
     TPalavra* p = retorna_info(item);
     printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
-    //imprime_item();
+
+    Stats* stats = retorna_stats(lista_dsd[292]);
+    printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
 
 }
 

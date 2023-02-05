@@ -3,14 +3,14 @@
 #include "string.h"
 #include "tab_hash.h"
 
-typedef struct sEstatistica {
-    long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
-    long maior_colisao;     // Guarda a maior quantidade de colisões no vetor de colisões
+struct sEstatistica {
     long buscas;            // Número total de buscas
+    long colisoes;          // Número total de colisões
     long comparacoes;       // Número total de comparações
     long f_carga;           // Fator de carga, determina a quantidade média ideal de colisões
-    long colisoes;          // Número total de colisões
-} Estatistica;
+    long maior_colisao;     // Guarda a maior quantidade de colisões no vetor de colisões
+    long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
+};
 
 
 struct sItem {
@@ -141,7 +141,13 @@ void* retorna_info(Item* item){
     return item->info;
 }
 
-
+void* retorna_stats(DicioSemiDinamico* dsd){
+    struct estatistica* stats = malloc(sizeof(struct estatisitca*));
+    //stats = dsd->stats;
+    //memcpy(stats, dsd->stats, sizeof(dsd->stats));
+    //stats->v_colisoes = NULL;
+    return dsd->stats;
+}
 
 // Cria um item com chave e informação
 Item* criar_item(long chave, void* info){
