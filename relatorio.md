@@ -6,7 +6,7 @@
 
 
 ## **1.Objetivos**
-O índice remissivo é uma lista de palavras importantes que se repetem em um texto junto com as páginas em que elas ocorrem, elas servem para criar uma relação de termos importantes para o texto em geral. Mas é perceptivel que seria muito custoso uma pessoa verificar quais palavras são importantes de serem citadas, onde elas aparecem e em quais páginas, logo o objetivo principal do trabalho é usar a ideia de dicionários para criar um programa capaz de otimizar esse trabalho, o programa deverá ser capaz de ler um arquivo de texto e retorna outro arquivo com o índice remissivo, e dessa forma entender melhor como funciona a estrutura de dicionários.
+Os dicionários são um tipo de estrutura de dados muito importantes e úteis na área da computação, visto isso o objetivo do trabalho é resolver um problema utilizando essa estrutura. O índice remissivo é uma lista de palavras importantes de texto anexado junto com as páginas em que elas ocorrem, ele serve para criar uma relação de termos importantes para o texto em geral. Mas é perceptivel que seria muito custoso uma pessoa verificar quais palavras são importantes de serem citadas, onde elas aparecem e em quais páginas, e esta é a dificuldade que foi proposta resolver utilizando a ideia de dicionários, afim de otimizar esse trabalho, o programa deverá ser capaz de ler um arquivo de texto e retorna outro arquivo com o índice remissivo.
 
 
 
