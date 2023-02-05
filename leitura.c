@@ -361,7 +361,7 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido){
 int main()
 {
     FILE *fl;
-    char *livro = "Paralelismo.base";
+    char *livro = "teste.base";
     fl = fopen(livro, "r");
 
     // Ler e criar um vetor de stop words
@@ -379,12 +379,19 @@ int main()
 
     DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido);
     printf("\n");
-    Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
-    TPalavra* p = retorna_info(item);
-    printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
 
-    Stats* stats = retorna_stats(lista_dsd[292]);
-    printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
+    // MANDAR ISSO PRO TF_IDF
+    double num_tf = tf("universidade", lido->ps[0], lista_dsd[0]);
+    printf("%f\n", num_tf);
+
+    // Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
+    // TPalavra* p = retorna_info(item);
+    // printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
+
+    //Stats* stats = retorna_stats(lista_dsd[292]);
+    //printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
+
+
 
 }
 

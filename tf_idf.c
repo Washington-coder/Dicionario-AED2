@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "leitura_pag.h"
-#include "dicio_semi_dinamico.h"
+#include "tab_hash.h"
 
 // Tipo contendo o dicionário de palavras, com suas ocorrências e páginas
 typedef struct sLivro{
@@ -45,22 +45,24 @@ typedef struct listaPa{
 // manter em cada palavra
 
 // retorna a frequência do termo em uma página (tpalavra, tpagina)
-long tf(TPalavra* palavra, TPagina* pagina){
+double tf(char* palavra, TPagina* pagina, DicioSemiDinamico* dsd){
     // quatindade de vezes que a palavra aparece
     // /
     // quantidade total
 
     // pegar um dicionário da lista de palavras dessa página, pesquisar, e retornar a divisão
+    TPalavra* p = retorna_info(buscar_no_dicio_sd(dsd, palavra));
     int qtd_total_de_palavras = pagina->num_pal;
-    int qtd_de_repeticoes_da_palavra = palavra->qtd_repeticoes;
+    int qtd_de_repeticoes_da_palavra = p->qtd_repeticoes;
 
-    long tf = qtd_de_repeticoes_da_palavra / qtd_total_de_palavras;
+    double tf = qtd_de_repeticoes_da_palavra / (double)qtd_total_de_palavras;
+    printf("t:%d r:%d = tf:%f\n", qtd_total_de_palavras, qtd_de_repeticoes_da_palavra, tf);
 
     return tf;
 }
 
 // retorna a quantidade de páginas que contém um termo (tpalavra, tlivro)
-long int n_containing(TPalavra* palavra, TLivro* livro){
+long int n_containing(char* palavra, TLivro* livro){
     // fazer um dicionário de cada página/lista de palavras, procurar pela palavra em cada dicionário de página, retornar um contador
 
     long int contador = 0;
@@ -76,7 +78,7 @@ long int n_containing(TPalavra* palavra, TLivro* livro){
             TPalavra* string = malloc(sizeof(TPalavra));
             strcpy(string->nome, pagina->listaPalavras->lista[j].nome);
 
-            if(strcmp(string->nome, palavra->nome) == 0);{
+            if(strcmp(string->nome, palavra) == 0);{
                 contador++;
             }
         }
@@ -94,5 +96,5 @@ long idf(TPalavra* palavra, TLivro* livro){
 // retorna o TF-IDF (com dicionário)
 long tfidf(TPalavra* palavra, TPagina* pagina, TLivro* livro){
     // retorna um vetor de tamanho 5, com os maiores TF-IDFs
-    return tf(palavra, pagina) * idf(palavra, livro);
+    //return tf(palavra, pagina, dsd) * idf(palavra, livro);
 }
