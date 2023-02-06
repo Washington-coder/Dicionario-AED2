@@ -26,6 +26,8 @@ struct palavra
     char nome[48];
     int qtd_repeticoes;
     int qtd_de_palavras;
+    long pag;
+    double tf_idf;
 };
 
 struct slivro
@@ -64,8 +66,8 @@ double tf(char *palavra, TPagina *pagina, DicioSemiDinamico *dsd)
         int qtd_total_de_palavras = pagina->num_pal;
         int qtd_de_repeticoes_da_palavra = p->qtd_repeticoes;
 
-        double tf = qtd_de_repeticoes_da_palavra / (double)qtd_total_de_palavras;
-        printf("t:%d r:%d = tf:%f\n", qtd_total_de_palavras, qtd_de_repeticoes_da_palavra, tf);
+        double tf = qtd_de_repeticoes_da_palavra / ((double)qtd_total_de_palavras);
+        //printf("t:%d r:%d = tf:%f\n", qtd_total_de_palavras, qtd_de_repeticoes_da_palavra, tf);
         return tf;
     }
     else{
@@ -116,7 +118,7 @@ double idf(char *palavra, TLivro *livro)
     // log do
     // número total de páginas / número de páginas em que a palavra aparece + 1
     // log(num_págs/ n_containing())
-    double result = log(livro->num_pag/n_containing(palavra, livro));
+    double result = log(livro->num_pag/(n_containing(palavra, livro)+1));
     return result;
 }
 
@@ -126,7 +128,67 @@ double tfidf(char *palavra, TPagina *pagina, TLivro *livro, DicioSemiDinamico *d
     // retorna um vetor de tamanho 5, com os maiores TF-IDFs
     // return tf(palavra, pagina, dsd) * idf(palavra, livro);
     double tff = tf(palavra, pagina, dsd);
-    printf("aqui?\n");
+    //printf("aqui?\n");
 
     return tff * idf(palavra, livro);
+}
+
+TPalavra* cria_p(){
+    TPalavra* p = malloc(sizeof(TPalavra));
+    p = NULL;
+    return p;
+}
+
+TPalavra* find_greatest_five(DicioSemiDinamico* *array, long size, void* info, TLivro* livro) {
+
+    // Find the five largest values
+    TPalavra* greatest_values[5] = {cria_p(), cria_p(), cria_p(), cria_p(), cria_p()};
+    //{NULL, NULL, NULL, NULL, NULL};
+    int count = 0;
+    printf("Procurando . . .\n");
+    for (int i = 0; i < size; i++) {
+        Item* it = buscar_no_dicio_sd(array[i], info,0);
+        //printf("1 aqui? %d\n", i);
+        if (it){
+            TPalavra* p = retorna_info(it);
+            //printf("2 aqui?\n");
+            if (p){
+            double current_value = tfidf(info, livro->ps[i], livro, array[i]);
+            //printf("3 aqui?\n");
+            p->tf_idf = current_value;
+            p->pag = i;
+            //printf("4 aqui?\n");
+            printf("\npágina %ld, TF-IDF: %f ", p->pag, p->tf_idf);
+            count++;
+                if (count == 5){
+                    break;
+                }
+            }
+            // for (int j = 0; j < 5; j++) {
+            //     //printf("%p ", greatest_values[j]);
+            //     printf("...\n");
+            //     if(greatest_values[j]){
+            //         //printf("aqui?\n");
+            //     if (current_value > greatest_values[j]->tf_idf) {
+                    
+            //         // Shift the other values to make room for the new one
+            //         for (int k = 4; k > j; k--) {
+            //             greatest_values[k] = greatest_values[k - 1];
+            //         }
+            //         greatest_values[j] = p;
+            //         break;
+            //     }
+            //     }
+            // }
+        }
+
+    }
+
+    return NULL;
+}
+
+TPalavra* buscar_indice_remissivo(char* palavra, TLivro* livro, DicioSemiDinamico** dsd){
+    long pags = retorna_num_pags(livro), repete = 0;
+
+    return find_greatest_five(dsd, livro->num_pag, palavra, livro);
 }

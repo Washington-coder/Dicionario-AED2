@@ -27,6 +27,8 @@ struct palavra
     char nome[48];
     int qtd_repeticoes;
     int qtd_de_palavras;
+    long pag;
+    double tf_idf;
 };
 
 // Struct tipo livro, que contém um vetor de tipos-página, e o número de páginas que possui
