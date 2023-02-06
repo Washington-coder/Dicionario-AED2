@@ -50,12 +50,13 @@ A construção do código foi dividida em partes.
 
 ### **3.2 Descrição do código**
 
-aqui a gente vai mostrar e falar o que a gente fez nos códigos e os códigos, detalhar bem os códigos
 O código base do trabalho é o `indice_remissivo.c`, ele funciona chamando uma ordem específica de funções. Primeiro ele começa chamando a função `ler_livro_main(obra)`, ele lerá o arquivo que contém as stop words e as colocará em um vetor, depois disso o livro que se deseja fazer o índice remissivo será lido, e colocado em um tipo `Tlivro` porém sem as stop words. Logo em seguida ativada a função `cria_dicio_livro(livro,fator_de_carga)`, que colocará as palavras e os devidos itens em um dicionário dinâmico e dele sairá o indice remissivo.
 
 ### **3.3 Configurações Experimentais**
 
 aqui a gente vai falar como fizemos os experimentos, usar figuras esquematicas de como as coisas se interligam
+![figuraesquematica](https://user-images.githubusercontent.com/107904641/216872165-09976f4e-caf9-4c22-9d95-9fc541e25759.png)
+
 
 ### **3.4 Resultados e interpretações**
 
