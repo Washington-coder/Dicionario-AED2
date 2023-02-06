@@ -3,6 +3,7 @@
 #include "string.h"
 #include "leitura_pag.h"
 #include "tab_hash.h"
+#include "tf_idf.h"
 #include "math.h"
 
 // Tipo contendo o dicionário de palavras, com suas ocorrências e páginas
@@ -55,14 +56,24 @@ double tf(char *palavra, TPagina *pagina, DicioSemiDinamico *dsd)
     // quantidade total
 
     // pegar um dicionário da lista de palavras dessa página, pesquisar, e retornar a divisão
-    TPalavra *p = retorna_info(buscar_no_dicio_sd(dsd, palavra));
-    int qtd_total_de_palavras = pagina->num_pal;
-    int qtd_de_repeticoes_da_palavra = p->qtd_repeticoes;
+    TPalavra* p;
+    Item *it = buscar_no_dicio_sd(dsd, palavra,0);
+    
+    if (it){
+        p = retorna_info(it);
+        int qtd_total_de_palavras = pagina->num_pal;
+        int qtd_de_repeticoes_da_palavra = p->qtd_repeticoes;
 
-    double tf = qtd_de_repeticoes_da_palavra / (double)qtd_total_de_palavras;
-    printf("t:%d r:%d = tf:%f\n", qtd_total_de_palavras, qtd_de_repeticoes_da_palavra, tf);
+        double tf = qtd_de_repeticoes_da_palavra / (double)qtd_total_de_palavras;
+        printf("t:%d r:%d = tf:%f\n", qtd_total_de_palavras, qtd_de_repeticoes_da_palavra, tf);
+        return tf;
+    }
+    else{
+        return 0;
+    }
+    //printf("aqui??\n");
 
-    return tf;
+    
 }
 
 // retorna a quantidade de páginas que contém um termo (tpalavra, tlivro)
@@ -114,5 +125,8 @@ double tfidf(char *palavra, TPagina *pagina, TLivro *livro, DicioSemiDinamico *d
 {
     // retorna um vetor de tamanho 5, com os maiores TF-IDFs
     // return tf(palavra, pagina, dsd) * idf(palavra, livro);
-    return tf(palavra, pagina, dsd) * idf(palavra, livro);
+    double tff = tf(palavra, pagina, dsd);
+    printf("aqui?\n");
+
+    return tff * idf(palavra, livro);
 }
