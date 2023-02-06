@@ -23,7 +23,7 @@ O dicionário estático é implementado em um vetor.
 
 **DINÂMICOS:** São construídos com completa capacidade de alteração. Tem suporte para inserção, busca e remoção e são implementados com um ótimo custo. Árvores e Hashing com o endereçamento aberto.
 
-Durante o planejamento do trabalho foi decidido que usaremos um dicionário estático para guardar as stop words, afinal não será preciso alterar o dicionário uma vez que ele ja foi construído, apenas fazer a busca dentro dele. E também foi decidido a utilização de um dicionário semi-dinâmico afim de adicionar as possíveis palavras que serão colocadas no índisse remissivo, já que só precisaremos adicionar e não remover dentro desse dicionário.
+Durante o planejamento do trabalho foi decidido que usaremos um dicionário estático para guardar as stop words, afinal não será preciso alterar o dicionário uma vez que ele ja foi construído, apenas fazer a busca dentro dele. E também foi decidido a utilização de um dicionário dinâmico afim de adicionar as possíveis palavras que serão colocadas no índisse remissivo, a função de remoção do dicionário dinâmico será útil na parte de redimensionamento.
 
 **FUNÇÃO DE HASH:** Algo em comum entre o dicionário semi-dinâmico e o dicionário dinâmico é que ambos possuem uma função de hashing, a função mapeia uma chave de busca para um índice do vetor. O seu ideal é que a função forneça índices únicos para o conjunto de chaves.
 A **função de Hashing** tem influência direta na eficiência das operações de Hash. Quanto melhor for o espelhamento, mais eficiente serão as operações.
@@ -45,12 +45,13 @@ A construção do código foi dividida em partes.
 
 **Pré-processamento:** onde é executada a função `carregaStopwords(.)`, que faz a leitura o arquivo das stop words e retorna um vetor das suas palavras. Depois disso, a função `lerPagina(arquivo, stopwords, num_pagina)` é ativada e faz a leitura do arquivo de texto que deverá ser tratado. Ao ler esse arquivo, o código insere as palavras de uma página -- excluindo as stopwords -- em uma `struct TPagina`, contendo o vetor de palavras, sua quantidade, e o número da respectiva página. Essa função é chamada repetidamente pela função `lerLivro(arquivo, stopwords)`, que guarda seus resultados dentro de uma `struct TLivro`, contendo um vetor de `TPagina`s e a quantidade de páginas. Uma vez que se chegue ao fim do livro, a função retorna o TLivro completo.
 
-**Dicionário Semi-Dinâmico:** depois da parte de pré-processamento, começa a parte de processamento em si, onde o código lerá o tipo livro do pré-processsamento, e colocará as palavras no diconario, alocado junto com as repetições e as páginas em que ocorrem, a partir disso será calculado o TF-IDF.
+**Dicionário Dinâmico:** depois da parte de pré-processamento, começa a parte de processamento em si, onde o código lerá o tipo livro do pré-processsamento, e colocará as palavras no diconário, a partir disso será calculado o TF-IDF.
 
 
 ### **3.2 Descrição do código**
 
 aqui a gente vai mostrar e falar o que a gente fez nos códigos e os códigos, detalhar bem os códigos
+O código base do trabalho é o `indice_remissivo.c`, ele funciona chamando uma ordem específica de funções. Primeiro ele começa chamando a função `ler_livro_main(obra)`, ele lerá o arquivo que contém as stop words e as colocará em um vetor, depois disso o livro que se deseja fazer o índice remissivo será lido, e colocado em um tipo `Tlivro` porém sem as stop words. Logo em seguida ativada a função `cria_dicio_livro(livro,fator_de_carga)`, que colocará as palavras e os devidos itens em um dicionário dinâmico e dele sairá o indice remissivo.
 
 ### **3.3 Configurações Experimentais**
 
