@@ -54,7 +54,8 @@ O código base do trabalho é o `indice_remissivo.c`, ele funciona chamando uma 
 
 ### **3.3 Configurações Experimentais**
 
-aqui a gente vai falar como fizemos os experimentos, usar figuras esquematicas de como as coisas se interligam
+Para testarmos o experimento precisamos pegar uma das bases de dados: **Aventuras.base, Guarani.base, Paralelismo.base,** e vamos abri-lo na função de ler o livro. 
+
 ![figuraesquematica](https://user-images.githubusercontent.com/107904641/216872165-09976f4e-caf9-4c22-9d95-9fc541e25759.png)
 
 
