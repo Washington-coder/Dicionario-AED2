@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "tf_idf.h"
 
 typedef struct listaPa{
     long num_lista;
@@ -43,11 +44,6 @@ typedef struct stats{
     long maior_colisao;     // Guarda a maior quantidade de colisões no vetor de colisões
     long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
 } Stats;
-
-typedef struct dim{
-    long tamanho;
-    long ocupacao;
-} Dimensoes;
 
 // 
 void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
@@ -90,6 +86,7 @@ listaPa *criaListaPalavras(TPagina *pagina)
 
         lista_de_palavras = (struct palavra *)malloc(1 * sizeof(struct palavra));
 
+        //printf("\n\t\tP Á G I N A\n");
         for (int i = 0; i < pagina->num_pal; i++)
         {
             
@@ -124,7 +121,7 @@ listaPa *criaListaPalavras(TPagina *pagina)
         }
         lp->lista = lista_de_palavras;
         lp->num_lista = qtd_de_palavras;
-
+        //imprime_lista_palavras(lp->lista, lp->num_lista);
         return lp;
     }
 }
@@ -212,7 +209,8 @@ TPagina *lerPagina(FILE *fl, char **stopwords, int num_pagina)
     {
         // Ler tudo que não for uma palavra com caracteres comuns, e descarta
         fscanf(fl, "%*[^A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]");
-        
+        //fscanf(fl, "%*[\t]");
+
         // Ler a palavra, e checar se chegou no fim do arquivo, ou se é igual ao marcador "PA"
         if ((fscanf(fl, "%49[A-Za-zãõâêîôûáéíóúàèìòùÃÕÂÊÎÔÛÁÉÍÓÚÀÈÌÒÙçÇ]", palavra) != 1) || (!strcmp(palavra, "PA")))
         {
@@ -359,7 +357,6 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido, long f_carga){
 }
 
 
-
 // Abre o arquivo do livro, e chamar as funções pra ler
 int main()
 {
@@ -375,18 +372,14 @@ int main()
 
     //imprime_livro(lido);
 
-    DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido, 3);
+    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0, 5);
+    // imprime_dicio_sd_encadeado(dsd);
+    // //printf("aaa");
+    // imprime_stats(dsd, 1);
+
+    DicioSemiDinamico** lista_dsd = criar_dicio_livro(lido, 5);
     printf("\n");
 
-    /*
-    DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 244);
-    
-    Dimensoes* dim = (void*) dsd;
-    printf("o: %ld, t: %ld\n", dim->ocupacao, dim->tamanho);
-    imprime_stats(dsd, 1);
-    TPalavra* rem = remove_do_dicio_sd(dsd, "escravos");
-    printf("%s\n", rem->nome);
-    */
 
     long indice = lido->num_pag-1;
     Item* item = buscar_no_dicio_sd(lista_dsd[indice], "cher", 1);
@@ -402,7 +395,32 @@ int main()
     printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n\n", stats->colisoes, stats->buscas, stats->f_carga);
 
     imprime_stats(lista_dsd[indice], 1);
-    
+    printf("\n");
+
+
+    printf("################ TESTES DO TF-IDF\n");
+
+    double num_tf = tf("universidade", lido->ps[0], lista_dsd[0]);
+    printf("TF: %f\n", num_tf);
+
+    long int num_con = n_containing("universidade", lido);
+    printf("n_containing: %ld\n", num_con); 
+
+    double num_idf = idf("universidade", lido);
+    printf("num_idf: %lf\n", num_idf); 
+
+    double num_tfidf = tfidf("universidade", lido->ps[0], lido, dsd);
+    printf("tfidf: %lf\n", num_tfidf);
+
+    // Item* item = buscar_no_dicio_sd(lista_dsd[292], "cher");
+    // TPalavra* p = retorna_info(item);
+    // printf("%s se repete %d vezes\n",p->nome, p->qtd_repeticoes);
+
+    //Stats* stats = retorna_stats(lista_dsd[292]);
+    //printf("pág 292: %ld colisões, %ld buscas, fator de carga = %ld\n", stats->colisoes, stats->buscas, stats->f_carga);
+
+
+
 }
 
 // chcp 65001
