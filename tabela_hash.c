@@ -325,7 +325,7 @@ DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
     double diferenca = dsd->stats->maior_colisao/(double)dsd->stats->f_carga;
 
     if (diferenca > 1.2){
-        printf("\n################################\nREDIMENSIONANDO\n");
+        //printf("\n################################\nREDIMENSIONANDO\n");
 
         Item* aux, *aux2;
         long tamanho = closest_greater_prime(dsd->tamanho * diferenca), n = 0;
@@ -361,11 +361,11 @@ DicioSemiDinamico* rehashing(DicioSemiDinamico* dsd){
                 }
             }
         }
-        printf("\n[%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
-        printf("\nnovo: [%ld] %ld <= %ld (%f)\n", new_dsd->tamanho,new_dsd->stats->f_carga, new_dsd->stats->maior_colisao, diferenca);
+        //printf("\n[%ld] %ld <= %ld (%f)\n", dsd->tamanho,dsd->stats->f_carga, dsd->stats->maior_colisao, diferenca);
+        //printf("\nnovo: [%ld] %ld <= %ld (%f)\n", new_dsd->tamanho,new_dsd->stats->f_carga, new_dsd->stats->maior_colisao, diferenca);
         
-        printf("\n###################### NOVO DICIO:\n");
-        imprime_stats(new_dsd, 1);
+        //printf("\n###################### NOVO DICIO:\n");
+        //imprime_stats(new_dsd, 1);
         free(dsd->stats);
         free(dsd);
         dsd = new_dsd;

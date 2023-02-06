@@ -45,6 +45,11 @@ typedef struct stats{
     long* v_colisoes;       // Armazena quantas vezes cada posição sofreu uma colisão
 } Stats;
 
+
+int retorna_num_pags(TLivro* livro){
+    return livro->num_pag;
+}
+
 // 
 void imprime_lista_palavras(struct palavra* lista_de_palavras, int qtd_de_palavras){
     
@@ -129,7 +134,7 @@ listaPa *criaListaPalavras(TPagina *pagina)
 
 
 // imprime uma página
-void printPag(TPagina *pagina)
+void imprime_pagina(TPagina *pagina)
 {
     for (int j = 0; j < pagina->num_pal; j++)
     {
@@ -145,7 +150,7 @@ void imprime_livro(TLivro *l)
     {
         printf("PÁGINA %d ###########\n", i + 1);
         printf("NÚMERO DE PALAVRAS: %d \n", l->ps[i]->num_pal);
-        printPag(l->ps[i]);
+        imprime_pagina(l->ps[i]);
         printf("\n\n");
     }
 
@@ -250,6 +255,7 @@ TLivro *lerLivro(FILE *fl, char **stopwords)
 {
     // Criar um livro do tipo TLivro e inicializar
     TLivro *livro = malloc(sizeof(TLivro));
+    
     livro->num_pag = 0;
 
     // Ler a "primeira" página (buffer NULL) 
@@ -340,7 +346,7 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido, long f_carga){
     DicioSemiDinamico** lista_dsd = malloc(sizeof(DicioSemiDinamico*) * lido->num_pag), *new_dsd;
     long ultrapassou = 0;
     for (int i = 0; i < lido->num_pag; i++){
-        printf("\n#################### PÁGINA %d\n", i);
+        //printf("\n#################### PÁGINA %d\n", i);
         DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, i,f_carga);
         
         new_dsd = rehashing(dsd);
@@ -349,7 +355,7 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido, long f_carga){
             dsd = new_dsd;
         };
         lista_dsd[i] = dsd;
-        imprime_stats(dsd, 0);
+        //imprime_stats(dsd, 0);
         
     }
     printf("Dicionários redimensionados:\t%ld\n", ultrapassou);
@@ -358,20 +364,23 @@ DicioSemiDinamico** criar_dicio_livro(TLivro* lido, long f_carga){
 
 
 // Abre o arquivo do livro, e chamar as funções pra ler
-int main()
-{
+TLivro* ler_livro_main(char* obra){
     FILE *fl;
-    char *livro = "Paralelismo.base";
-    fl = fopen(livro, "r");
+    
+    //char *livro = "Paralelismo.base";
+    fl = fopen(obra, "r");
 
     // Ler e criar um vetor de stop words
     char **vetorDeStopWords = carregarStopwords();
-
     // Ler livro
     TLivro *lido = lerLivro(fl, vetorDeStopWords);
 
-    //imprime_livro(lido);
+    return lido;
+}
 
+
+int funcao_teste(char* obra){
+    TLivro* lido = ler_livro_main(obra);
     DicioSemiDinamico* dsd = cria_dicio_lista_palavras(lido, 0, 5);
     // imprime_dicio_sd_encadeado(dsd);
     // //printf("aaa");
@@ -423,4 +432,15 @@ int main()
 
 }
 
+/*
+int main()
+{
+    
+    funcao_teste("Paralelismo.base");
+
+    //imprime_livro(lido);
+
+    
+}
+*/
 // chcp 65001
